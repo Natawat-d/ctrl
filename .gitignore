@@ -8,6 +8,8 @@ node_modules/
 **/node_modules/
 .next/
 **/.next/
+*.tsbuildinfo
+**/*.tsbuildinfo
 dist/
 build/
 out/
