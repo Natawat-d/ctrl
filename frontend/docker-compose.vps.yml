@@ -1,0 +1,24 @@
+# VPS deploy: http://147.50.254.104/ctrl  (nginx → 127.0.0.1:3200)
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes: [ mongo_data:/data/db ]
+
+  mqtt:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    volumes: [ ./deploy/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro ]
+    ports: [ "1883:1883" ]          # เปิดสาธารณะให้ ESP จริงต่อเข้ามาได้ (ถ้าพอร์ตชน ให้ตัดบรรทัดนี้)
+
+  app:
+    build:
+      context: .
+      args: { NEXT_PUBLIC_BASE_PATH: "/ctrl" }
+    image: ctrl-app
+    restart: unless-stopped
+    env_file: .env
+    ports: [ "127.0.0.1:3200:3000" ]
+    depends_on: [ mongo, mqtt ]
+
+volumes: { mongo_data: {} }

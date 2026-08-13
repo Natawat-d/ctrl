@@ -1,0 +1,57 @@
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import { ObjectId } from "mongodb";
+
+// SEC-1: fail-closed — production ต้องตั้ง JWT_SECRET เสมอ
+// เช็คแบบ lazy (ตอนใช้ token จริง) ไม่ใช่ตอน import — เพราะ `next build` รันด้วย
+// NODE_ENV=production โดยยังไม่มี env (inject ตอน runtime) ถ้า throw ตอน load จะทำ build พัง
+let _warned = false;
+function getSecret() {
+  const s = process.env.JWT_SECRET;
+  if (s && s.length > 0) return s;
+  if (process.env.NODE_ENV === "production") {
+    // กัน prod รันด้วย default ที่เปิดในซอร์ส → ปลอม token เป็น admin ได้
+    throw new Error("JWT_SECRET must be set in production (fail-closed)");
+  }
+  if (!_warned) { console.warn("[auth] JWT_SECRET ไม่ได้ตั้ง — ใช้ dev default (ห้ามใช้บน production)"); _warned = true; }
+  return "dev-secret-change-me";
+}
+
+export function signToken(user) {
+  return jwt.sign(
+    { uid: user._id.toString(), role: user.role, tid: user.tenant_id ? user.tenant_id.toString() : "" },
+    getSecret(),
+    { expiresIn: "24h" }
+  );
+}
+
+export function verifyToken(t) {
+  try {
+    return jwt.verify(t, getSecret());
+  } catch {
+    return null;
+  }
+}
+
+export function hashPassword(p) {
+  return bcrypt.hashSync(p, 10);
+}
+
+export function checkPassword(p, h) {
+  return bcrypt.compareSync(p, h || "");
+}
+
+export function userFromReq(req) {
+  const a = req.headers.get("authorization") || "";
+  if (!a.startsWith("Bearer ")) return null;
+  return verifyToken(a.slice(7));
+}
+
+export function tenantFilter(user, base = {}) {
+  if (user && user.role !== "platform_admin" && user.tid) {
+    try {
+      base.tenant_id = new ObjectId(user.tid);
+    } catch {}
+  }
+  return base;
+}

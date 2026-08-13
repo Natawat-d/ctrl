@@ -1,0 +1,49 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  mqtt:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    volumes:
+      - ./infra/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mqtt_data:/mosquitto/data
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+
+  web:
+    build: ./frontend
+    restart: unless-stopped
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - DB_NAME=akr
+      - MQTT_URL=mqtt://mqtt:1883
+      - JWT_SECRET=change-me-in-prod
+      - TZ=Asia/Bangkok
+    depends_on:
+      - mongo
+      - mqtt
+    ports:
+      - "3000:3000"
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    volumes:
+      - ./infra/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+volumes:
+  mongo_data:
+  mqtt_data:
+  caddy_data:

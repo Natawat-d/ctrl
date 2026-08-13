@@ -1,0 +1,4 @@
+# Next.js full-stack app (API + UI same origin). Prod: ใส่โดเมนจริง → auto-SSL
+:80 {
+	reverse_proxy web:3000
+}
