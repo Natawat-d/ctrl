@@ -8,7 +8,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 
-type Kind = "watt" | "water" | "both";
+type Kind = "watt" | "water" | "both" | "cabinet";
 const F = "'IBM Plex Mono','Space Mono',monospace";
 
 // ===== Electric: Schneider DMR121-style single-phase DIN energy meter =====
@@ -65,8 +65,8 @@ function buildWatt() {
 // ===== Water: 2หุน (1/2") brass multi-jet pulse water meter w/ NPN output cable =====
 function buildWater() {
   const group = new THREE.Group();
-  const brass = new THREE.MeshStandardMaterial({ color: 0xb98a3e, metalness: 0.95, roughness: 0.32, envMapIntensity: 1.35 });
-  const brassDark = new THREE.MeshStandardMaterial({ color: 0x8a6528, metalness: 0.95, roughness: 0.38 });
+  const brass = new THREE.MeshStandardMaterial({ color: 0x9c7b3a, metalness: 0.85, roughness: 0.5, envMapIntensity: 0.8 });
+  const brassDark = new THREE.MeshStandardMaterial({ color: 0x6f5527, metalness: 0.85, roughness: 0.55, envMapIntensity: 0.7 });
   // main chamber (horizontal round body)
   const body = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 1.15, 40), brass); body.rotation.z = Math.PI / 2; group.add(body);
   // 1/2" threaded ends both sides
@@ -132,6 +132,73 @@ function buildWater() {
   return { group, update };
 }
 
+// ===== compact DMR121 meter for the cabinet rows =====
+function makeMini(seed: number) {
+  const group = new THREE.Group();
+  group.add(new THREE.Mesh(new RoundedBoxGeometry(0.74, 1.7, 0.55, 4, 0.06),
+    new THREE.MeshStandardMaterial({ color: 0x23252b, metalness: 0.45, roughness: 0.46, envMapIntensity: 1.1 })));
+  const face = new THREE.Mesh(new RoundedBoxGeometry(0.6, 0.66, 0.05, 3, 0.04),
+    new THREE.MeshStandardMaterial({ color: 0x0b0c10, metalness: 0.3, roughness: 0.5 }));
+  face.position.set(0, 0.42, 0.29); group.add(face);
+  const dc = document.createElement("canvas"); dc.width = 256; dc.height = 160;
+  const g = dc.getContext("2d")!;
+  const tex = new THREE.CanvasTexture(dc); tex.colorSpace = THREE.SRGBColorSpace;
+  const disp = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.31), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }));
+  disp.position.set(0, 0.42, 0.315); group.add(disp);
+  const ledMat = new THREE.MeshStandardMaterial({ color: 0xff3b30, emissive: 0xff3b30, emissiveIntensity: 2, roughness: 0.3 });
+  const led = new THREE.Mesh(new THREE.SphereGeometry(0.03, 12, 12), ledMat); led.position.set(0.22, 0.72, 0.3); group.add(led);
+  const tmat = new THREE.MeshStandardMaterial({ color: 0x27282e, metalness: 0.6, roughness: 0.5 });
+  const smat = new THREE.MeshStandardMaterial({ color: 0xcfd2d6, metalness: 1, roughness: 0.3 });
+  for (const sy of [-0.92, 0.92]) for (let i = 0; i < 2; i++) {
+    const tb = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.24, 0.42), tmat); tb.position.set(-0.18 + i * 0.36, sy, 0.16); group.add(tb);
+    const sc = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.04, 12), smat); sc.rotation.x = Math.PI / 2; sc.position.set(-0.18 + i * 0.36, sy + (sy < 0 ? 0.06 : -0.06), 0.38); group.add(sc);
+  }
+  let kwh = 1000 + seed * 733 % 8000; const ph = seed * 1.7;
+  const update = (t: number) => {
+    kwh += 0.02;
+    g.fillStyle = "#05070b"; g.fillRect(0, 0, 256, 160);
+    g.fillStyle = "#5aa0ff"; g.font = `700 15px ${F}`; g.fillText("kWh", 12, 26);
+    g.fillStyle = "#eaf3ff"; g.font = `700 40px ${F}`; g.fillText(kwh.toFixed(0), 12, 74);
+    g.fillStyle = "#7f9dc7"; g.font = `600 14px ${F}`; g.fillText((900 + Math.round(Math.sin(t + ph) * 300)) + " W", 12, 102);
+    g.fillStyle = "rgba(0,229,255,0.22)"; g.fillRect(12, 120, 232, 22);
+    g.fillStyle = "#00e5ff"; g.fillRect(12, 120, 116 + Math.sin(t * 1.4 + ph) * 90, 22);
+    tex.needsUpdate = true; ledMat.emissiveIntensity = 1 + Math.max(0, Math.sin(t * 5 + ph)) * 2.6;
+  };
+  return { group, update };
+}
+
+// ===== standard DIN-rail electrical cabinet with a bank of DMR121 meters =====
+function buildCabinet() {
+  const group = new THREE.Group();
+  const minis: { group: THREE.Group; update: (t: number) => void }[] = [];
+  // enclosure back + inner panel
+  const back = new THREE.Mesh(new RoundedBoxGeometry(9.9, 5.7, 0.4, 6, 0.14),
+    new THREE.MeshStandardMaterial({ color: 0x1f2126, metalness: 0.4, roughness: 0.55, envMapIntensity: 1 }));
+  back.position.z = -0.55; group.add(back);
+  const panel = new THREE.Mesh(new RoundedBoxGeometry(9.2, 5.0, 0.14, 4, 0.08),
+    new THREE.MeshStandardMaterial({ color: 0x2a2c33, metalness: 0.5, roughness: 0.5 })); panel.position.z = -0.34; group.add(panel);
+  // door frame (light steel)
+  const fmat = new THREE.MeshStandardMaterial({ color: 0x4e515a, metalness: 0.8, roughness: 0.45, envMapIntensity: 0.85 });
+  const fw = 10.0, fh = 5.8, tk = 0.2;
+  ([[fw, tk, 0, fh / 2], [fw, tk, 0, -fh / 2], [tk, fh, -fw / 2, 0], [tk, fh, fw / 2, 0]] as const)
+    .forEach(([w, h, x, y]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.55), fmat); b.position.set(x, y, 0.42); group.add(b); });
+  // trunking ducts (top / middle / bottom)
+  const ductMat = new THREE.MeshStandardMaterial({ color: 0x373a41, metalness: 0.3, roughness: 0.7 });
+  const slotMat = new THREE.MeshStandardMaterial({ color: 0x23252b, roughness: 0.85 });
+  for (const dy of [2.35, 0, -2.35]) {
+    const d = new THREE.Mesh(new THREE.BoxGeometry(9.0, 0.5, 0.5), ductMat); d.position.set(0, dy, -0.05); group.add(d);
+    for (let s = 0; s < 22; s++) { const sl = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.34, 0.02), slotMat); sl.position.set(-4.35 + s * 0.415, dy, 0.21); group.add(sl); }
+  }
+  // DIN rails + meter banks
+  const railMat = new THREE.MeshStandardMaterial({ color: 0x676d75, metalness: 0.9, roughness: 0.45, envMapIntensity: 1.0 });
+  [1.15, -1.15].forEach((ry, r) => {
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(8.7, 0.34, 0.12), railMat); rail.position.set(0, ry, 0); group.add(rail);
+    for (let i = 0; i < 5; i++) { const m = makeMini(r * 5 + i); m.group.position.set(-3.4 + i * 1.7, ry, 0.34); group.add(m.group); minis.push(m); }
+  });
+  const update = (t: number) => { for (const m of minis) m.update(t); };
+  return { group, update };
+}
+
 export default function MeterTwin({ kind = "both", height }: { kind?: Kind; height?: number }) {
   const mountRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -139,32 +206,34 @@ export default function MeterTwin({ kind = "both", height }: { kind?: Kind; heig
     let w = mount.clientWidth || 800, h = mount.clientHeight || 480;
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); renderer.setSize(w, h);
-    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15; renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.97; renderer.outputColorSpace = THREE.SRGBColorSpace;
     mount.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, w / h, 0.1, 100);
     const pmrem = new THREE.PMREMGenerator(renderer); const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environment = envTex;
-    const keyL = new THREE.DirectionalLight(0xffffff, 2.1); keyL.position.set(-5, 7, 5); scene.add(keyL);
-    const rimL = new THREE.DirectionalLight(0x88aaff, 1.5); rimL.position.set(6, 2, -5); scene.add(rimL);
-    const warmL = new THREE.DirectionalLight(0xffd9a0, 0.6); warmL.position.set(3, -2, 4); scene.add(warmL);
+    const keyL = new THREE.DirectionalLight(0xffffff, 1.5); keyL.position.set(-5, 7, 5); scene.add(keyL);
+    const rimL = new THREE.DirectionalLight(0x88aaff, 1.1); rimL.position.set(6, 2, -5); scene.add(rimL);
+    const warmL = new THREE.DirectionalLight(0xffe4b8, 0.22); warmL.position.set(3, -2, 4); scene.add(warmL);
     scene.add(new THREE.AmbientLight(0xffffff, 0.12));
 
-    const parts: { group: THREE.Group; update: (t: number, dt: number) => void; baseRot: number }[] = [];
-    if (kind === "watt" || kind === "both") { const p = buildWatt(); p.group.position.x = kind === "both" ? -2.0 : 0; scene.add(p.group); parts.push({ ...p, baseRot: 0.3 }); }
-    if (kind === "water" || kind === "both") { const p = buildWater(); p.group.position.set(kind === "both" ? 2.1 : 0, kind === "both" ? 0.05 : 0, 0); scene.add(p.group); parts.push({ ...p, baseRot: -0.3 }); }
-    if (kind === "both") { camera.position.set(0, 1.1, 10.5); camera.lookAt(0, 0, 0); }
+    const parts: { group: THREE.Group; update: (t: number, dt: number) => void; baseRot: number; amp: number }[] = [];
+    if (kind === "cabinet") { const p = buildCabinet(); p.group.scale.setScalar(0.72); scene.add(p.group); parts.push({ ...p, baseRot: 0, amp: 0.06 }); }
+    if (kind === "watt" || kind === "both") { const p = buildWatt(); p.group.position.x = kind === "both" ? -2.0 : 0; scene.add(p.group); parts.push({ ...p, baseRot: 0.3, amp: 0.5 }); }
+    if (kind === "water" || kind === "both") { const p = buildWater(); p.group.position.set(kind === "both" ? 2.1 : 0, kind === "both" ? 0.05 : 0, 0); scene.add(p.group); parts.push({ ...p, baseRot: -0.3, amp: 0.5 }); }
+    if (kind === "cabinet") { camera.position.set(0, 0.3, 11); camera.lookAt(0, 0, 0); }
+    else if (kind === "both") { camera.position.set(0, 1.1, 10.5); camera.lookAt(0, 0, 0); }
     else if (kind === "water") { camera.position.set(2.4, 1.6, 6.8); camera.lookAt(0, 0.2, 0); }
     else { camera.position.set(2.4, 1.0, 6.4); camera.lookAt(0, 0.1, 0); }
 
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(w, h), 0.5, 0.42, 0.7));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(w, h), 0.34, 0.4, 0.92));
     composer.addPass(new OutputPass());
 
     const clock = new THREE.Clock(); let raf = 0;
     const tick = () => {
       raf = requestAnimationFrame(tick); const dt = clock.getDelta(), t = clock.elapsedTime;
-      parts.forEach((p, i) => { p.group.rotation.y = p.baseRot + Math.sin(t * 0.42 + i) * 0.5; p.group.position.y = (p.group.userData.baseY ?? (p.group.userData.baseY = p.group.position.y)) + Math.sin(t * 0.9 + i) * 0.07; p.update(t, dt); });
+      parts.forEach((p, i) => { p.group.rotation.y = p.baseRot + Math.sin(t * 0.4 + i) * p.amp; p.group.position.y = (p.group.userData.baseY ?? (p.group.userData.baseY = p.group.position.y)) + Math.sin(t * 0.85 + i) * p.amp * 0.5; p.update(t, dt); });
       composer.render();
     };
     tick();
