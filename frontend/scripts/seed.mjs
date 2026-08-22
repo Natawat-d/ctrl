@@ -13,6 +13,9 @@ const db = client.db(dbName);
 await db.collection("users").createIndex({ login_id: 1 }, { unique: true }).catch(() => {});
 await db.collection("markets").createIndex({ slug: 1 }, { unique: true, sparse: true }).catch(() => {});
 await db.collection("devices").createIndex({ uuid: 1 }, { unique: true, sparse: true }).catch(() => {});
+// กันบิลซ้ำรอบเดียวกัน: generateForMarket ใช้ findOne→upsert ซึ่งไม่ atomic
+// cron ชนกับกดออกบิลเองพร้อมกันอาจ insert สองใบ — unique index กันที่ชั้น DB
+await db.collection("bills").createIndex({ unit_id: 1, cycle: 1 }, { unique: true }).catch(() => {});
 
 const existingTS = await db.listCollections({ name: "readings" }).toArray();
 if (existingTS.length === 0) {
@@ -69,7 +72,7 @@ if (!exists) {
   const tenantId = new ObjectId();
   await db.collection("tenants").insertOne({ _id: tenantId, name: "Arkara Property", plan: "demo", status: "active", created_at: now, updated_at: now });
   const ownerId = new ObjectId();
-  await db.collection("users").insertOne({ _id: ownerId, tenant_id: tenantId, role: "owner", login_id: "arkara@owner", password_hash: hash("owner1234"), password_plain: "owner1234", display_name: "เจ้าของอาคาร", email: "owner@ctrl.local", verified: true, status: "active", created_at: now, updated_at: now });
+  await db.collection("users").insertOne({ _id: ownerId, tenant_id: tenantId, role: "owner", login_id: "arkara@owner", password_hash: hash("owner1234"), display_name: "เจ้าของอาคาร", email: "owner@ctrl.local", verified: true, status: "active", created_at: now, updated_at: now });
 
   const marketId = new ObjectId();
   await db.collection("markets").insertOne({
@@ -119,7 +122,7 @@ if (!exists) {
         const email = code.toLowerCase().replace("-", "") + "@ctrl.local";
         const nid = makeNid(ti);
         await db.collection("users").insertOne({
-          _id: tuId, tenant_id: tenantId, role: "tenant_user", login_id: login, password_hash: hash(pass), password_plain: pass,
+          _id: tuId, tenant_id: tenantId, role: "tenant_user", login_id: login, password_hash: hash(pass),
           first_name: firstName, last_name: lastName || "", national_id: nid, phone,
           display_name: fullName, email, verified: true, status: "active",
           unit_ids: [uid], created_at: now, updated_at: now,
@@ -130,7 +133,7 @@ if (!exists) {
       }
   }
   // บัญชีเดโมหน้า login ใช้ arkara@a-101 → ตั้งรหัส test1234 ทับ (ตัวอื่นใช้ passXxxx)
-  await db.collection("users").updateOne({ login_id: "arkara@a-101" }, { $set: { password_hash: hash("test1234"), password_plain: "test1234" } });
+  await db.collection("users").updateOne({ login_id: "arkara@a-101" }, { $set: { password_hash: hash("test1234")} });
   CREDS[0].pass = "test1234";
 
   // อุปกรณ์ใหม่จาก gateway ที่ยังไม่ถูกผูก (โชว์หน้า "รอผูก")
@@ -391,7 +394,7 @@ async function generateBulkProperties(db, now) {
   for (const [pi, P] of PROPS.entries()) {
     const tenantId = new ObjectId(), marketId = new ObjectId(), ownerId = new ObjectId();
     await db.collection("tenants").insertOne({ _id: tenantId, name: P.name, plan: "demo", status: "active", created_at: now, updated_at: now });
-    await db.collection("users").insertOne({ _id: ownerId, tenant_id: tenantId, role: "owner", login_id: `${P.slug}@owner`, password_hash: hashFast("owner1234"), password_plain: "owner1234", display_name: `เจ้าของ${P.name}`, email: `owner@${P.slug}.demo`, verified: true, status: "active", created_at: now, updated_at: now });
+    await db.collection("users").insertOne({ _id: ownerId, tenant_id: tenantId, role: "owner", login_id: `${P.slug}@owner`, password_hash: hashFast("owner1234"), display_name: `เจ้าของ${P.name}`, email: `owner@${P.slug}.demo`, verified: true, status: "active", created_at: now, updated_at: now });
     await db.collection("markets").insertOne({ _id: marketId, tenant_id: tenantId, name: P.name, type: "condo", slug: P.slug, timezone: "Asia/Bangkok", market_short: short++, province: PROV[pi % PROV.length],
       rate: { elec_per_kwh: P.elec, water_per_m3: P.water, service_fee: 0, elec_cost_per_kwh: P.ecost, water_cost_per_m3: P.wcost },
       billing: { cycle_day: 1, due_days: 7, grace_days: 5, late_fee_per_day: 50, late_fee_type: "fixed" }, created_at: now, updated_at: now });
@@ -425,7 +428,7 @@ async function generateBulkProperties(db, now) {
           RD.push({ ts: prevStart, meta: wmeta, v: w0 }, { ts: new Date(prevEnd.getTime() - 3600e3), meta: wmeta, v: rd(w0 + wUse, 3) }, { ts: now, meta: wmeta, v: wNow });
           const fn = FIRST[(gIdx * 7 + pi) % FIRST.length], ln = LAST[(gIdx * 13 + pi * 3) % LAST.length];
           const pass = "pass" + code.toLowerCase();
-          US.push({ _id: tuId, tenant_id: tenantId, role: "tenant_user", login_id: `${P.slug}@${code.toLowerCase()}`, password_hash: hashFast(pass), password_plain: pass, first_name: fn, last_name: ln, national_id: makeNid(gIdx), phone: "0" + rint(8, 9) + String(rint(10000000, 99999999)), display_name: fn + " " + ln, email: `${P.slug}.${code.toLowerCase()}@mail.demo`, verified: true, status: "active", unit_ids: [uid], created_at: now, updated_at: now });
+          US.push({ _id: tuId, tenant_id: tenantId, role: "tenant_user", login_id: `${P.slug}@${code.toLowerCase()}`, password_hash: hashFast(pass), first_name: fn, last_name: ln, national_id: makeNid(gIdx), phone: "0" + rint(8, 9) + String(rint(10000000, 99999999)), display_name: fn + " " + ln, email: `${P.slug}.${code.toLowerCase()}@mail.demo`, verified: true, status: "active", unit_ids: [uid], created_at: now, updated_at: now });
           const eAmt = rd(eUse * P.elec), wAmt = rd(wUse * P.water);
           const lines = [{ type: "electric", usage: eUse, rate: P.elec, amount: eAmt }, { type: "water", usage: wUse, rate: P.water, amount: wAmt }, { type: "rent", amount: rent }, { type: "common", amount: common }];
           const subtotal = rd(eAmt + wAmt + rent + common);
