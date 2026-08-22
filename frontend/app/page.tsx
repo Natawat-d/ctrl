@@ -2,7 +2,7 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import EquipmentShowcase from "@/components/EquipmentShowcase";
 import { HeroBlueprint } from "@/components/Blueprint";
-import WattMeterTwin from "@/components/WattMeterTwin";
+import MeterTwin from "@/components/MeterTwin";
 
 const steps = [
   { icon: "grid", t: "ติดตั้งมิเตอร์ต่อห้อง", d: "แต่ละห้องมีมิเตอร์ไฟและมิเตอร์น้ำ ส่งค่าเข้าระบบเอง" },
@@ -47,11 +47,11 @@ export default function Home() {
       <section className="twin-band dark-band">
         <div className="landing">
           <div className="equip-head">
-            <span className="tag">Digital Twin</span>
-            <h2>มิเตอร์เสมือนจริง แบบ 3D</h2>
-            <p>โมเดล 3 มิติของมิเตอร์ไฟ อ่านค่าแบบเรียลไทม์ — ภาพจำลองที่สะท้อนอุปกรณ์จริงในระบบ</p>
+            <span className="tag">3D</span>
+            <h2>มิเตอร์น้ำ-ไฟ ในระบบ CTRL</h2>
+            <p>โมเดล 3 มิติของอุปกรณ์วัดน้ำและไฟที่ใช้จริงในระบบ</p>
           </div>
-          <WattMeterTwin />
+          <MeterTwin kind="both" />
         </div>
       </section>
       <EquipmentShowcase />
