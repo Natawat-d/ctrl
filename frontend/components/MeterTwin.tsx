@@ -142,13 +142,14 @@ function makeBrushedTex(rep = 3) {
 // small brand label on a meter body
 function makeLabelTex(seed: number) {
   const c = document.createElement("canvas"); c.width = 256; c.height = 140; const x = c.getContext("2d")!;
-  x.fillStyle = "#e9eaec"; x.fillRect(0, 0, 256, 140);
-  x.fillStyle = "#12141a"; x.fillRect(0, 0, 256, 34);
-  x.fillStyle = "#e9eaec"; x.font = "700 22px " + F; x.fillText("DMR121", 12, 25);
-  x.fillStyle = "#3a3f48"; x.font = "600 15px " + F; x.fillText("1(6)A · 230V · 50Hz", 12, 62);
+  // light-NEUTRAL-grey plaque (NOT pure white) so it can't clip/bloom to #fff
+  x.fillStyle = "#bcc0c4"; x.fillRect(0, 0, 256, 140);
+  x.fillStyle = "#0d0f14"; x.fillRect(0, 0, 256, 34);
+  x.fillStyle = "#c6cace"; x.font = "700 22px " + F; x.fillText("DMR121", 12, 25);
+  x.fillStyle = "#1c2026"; x.font = "600 15px " + F; x.fillText("1(6)A · 230V · 50Hz", 12, 62);
   x.fillText("kWh · RS485 Modbus", 12, 84);
-  for (let i = 0; i < 34; i++) { x.fillStyle = i % 2 ? "#12141a" : "#e9eaec"; x.fillRect(12 + i * 6.6, 98, i % 3 ? 3 : 5, 30); }
-  x.fillStyle = "#12141a"; x.font = "600 12px " + F; x.fillText("SN " + (100000 + seed * 4813 % 899999), 170, 118);
+  for (let i = 0; i < 34; i++) { x.fillStyle = i % 2 ? "#1c2026" : "#a6aab0"; x.fillRect(12 + i * 6.6, 98, i % 3 ? 3 : 5, 30); }
+  x.fillStyle = "#1c2026"; x.font = "600 12px " + F; x.fillText("SN " + (100000 + seed * 4813 % 899999), 170, 118);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
 
@@ -156,7 +157,7 @@ function makeLabelTex(seed: number) {
 function makeMini(seed: number, brushed: THREE.Texture) {
   const group = new THREE.Group();
   const body = new THREE.Mesh(new RoundedBoxGeometry(0.74, 1.7, 0.55, 4, 0.06),
-    new THREE.MeshStandardMaterial({ color: 0x2b2e35, metalness: 0.5, roughness: 0.5, roughnessMap: brushed, envMapIntensity: 1.15 }));
+    new THREE.MeshStandardMaterial({ color: 0x212429, metalness: 0.08, roughness: 0.8, roughnessMap: brushed, envMapIntensity: 0.7 }));
   group.add(body);
   const face = new THREE.Mesh(new RoundedBoxGeometry(0.6, 0.62, 0.05, 3, 0.04),
     new THREE.MeshStandardMaterial({ color: 0x0b0c10, metalness: 0.3, roughness: 0.45 }));
@@ -167,14 +168,14 @@ function makeMini(seed: number, brushed: THREE.Texture) {
   const disp = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.31), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }));
   disp.position.set(0, 0.48, 0.315); group.add(disp);
   // printed label
-  const label = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.33), new THREE.MeshStandardMaterial({ map: makeLabelTex(seed), roughness: 0.85 }));
+  const label = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.33), new THREE.MeshStandardMaterial({ map: makeLabelTex(seed), roughness: 0.92, metalness: 0, envMapIntensity: 0.35 }));
   label.position.set(0, -0.18, 0.281); group.add(label);
   // side vents
   for (let v = 0; v < 5; v++) { const vt = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.02, 0.02), new THREE.MeshStandardMaterial({ color: 0x15171c })); vt.position.set(0, -0.62 + v * 0.05, 0.281); group.add(vt); }
   const ledMat = new THREE.MeshStandardMaterial({ color: 0xff3b30, emissive: 0xff3b30, emissiveIntensity: 2, roughness: 0.3 });
   const led = new THREE.Mesh(new THREE.SphereGeometry(0.028, 12, 12), ledMat); led.position.set(0.22, 0.78, 0.3); group.add(led);
-  const tmat = new THREE.MeshStandardMaterial({ color: 0x27282e, metalness: 0.6, roughness: 0.5 });
-  const smat = new THREE.MeshStandardMaterial({ color: 0xcfd2d6, metalness: 1, roughness: 0.3 });
+  const tmat = new THREE.MeshStandardMaterial({ color: 0x212227, metalness: 0.5, roughness: 0.6 });
+  const smat = new THREE.MeshStandardMaterial({ color: 0x8a9096, metalness: 0.9, roughness: 0.5, envMapIntensity: 0.6 });
   for (const sy of [-0.92, 0.92]) for (let i = 0; i < 2; i++) {
     const tb = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.24, 0.42), tmat); tb.position.set(-0.18 + i * 0.36, sy, 0.16); group.add(tb);
     const sc = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.04, 12), smat); sc.rotation.x = Math.PI / 2; sc.position.set(-0.18 + i * 0.36, sy + (sy < 0 ? 0.06 : -0.06), 0.38); group.add(sc);
@@ -198,18 +199,28 @@ function buildCabinet() {
   const group = new THREE.Group();
   const minis: { group: THREE.Group; update: (t: number) => void }[] = [];
   const brushed = makeBrushedTex(4);
+  // soft radial vignette backdrop: gentle pool of light behind the cabinet, sinking the frame corners to near-black
+  {
+    const vc = document.createElement("canvas"); vc.width = vc.height = 512; const vx = vc.getContext("2d")!;
+    const grd = vx.createRadialGradient(256, 230, 40, 256, 256, 300);
+    grd.addColorStop(0, "#1c2027"); grd.addColorStop(0.55, "#0d0f13"); grd.addColorStop(1, "#050608");
+    vx.fillStyle = grd; vx.fillRect(0, 0, 512, 512);
+    const vt = new THREE.CanvasTexture(vc); vt.colorSpace = THREE.SRGBColorSpace;
+    const vig = new THREE.Mesh(new THREE.PlaneGeometry(34, 26), new THREE.MeshBasicMaterial({ map: vt, depthWrite: false, toneMapped: true }));
+    vig.position.set(0.5, 0.3, -3.2); group.add(vig);
+  }
   // enclosure back + inner panel + side walls (depth)
   const back = new THREE.Mesh(new RoundedBoxGeometry(9.9, 5.7, 0.4, 6, 0.14),
-    new THREE.MeshStandardMaterial({ color: 0x202329, metalness: 0.45, roughness: 0.5, roughnessMap: brushed, envMapIntensity: 1 }));
+    new THREE.MeshStandardMaterial({ color: 0x1b1e23, metalness: 0.8, roughness: 0.36, roughnessMap: brushed, envMapIntensity: 0.8 }));
   back.position.z = -0.7; group.add(back);
   const panel = new THREE.Mesh(new RoundedBoxGeometry(9.2, 5.0, 0.14, 4, 0.08),
-    new THREE.MeshStandardMaterial({ color: 0x2b2e35, metalness: 0.5, roughness: 0.5, roughnessMap: brushed })); panel.position.z = -0.4; group.add(panel);
+    new THREE.MeshStandardMaterial({ color: 0x212429, metalness: 0.75, roughness: 0.38, roughnessMap: brushed, envMapIntensity: 0.7 })); panel.position.z = -0.4; group.add(panel);
   const wallMat = new THREE.MeshStandardMaterial({ color: 0x171a1f, metalness: 0.4, roughness: 0.6 });
   for (const [w, h, x, y] of [[9.9, 0.9, 0, 2.85], [9.9, 0.9, 0, -2.85], [0.9, 5.7, -4.95, 0], [0.9, 5.7, 4.95, 0]] as const) {
     const wl = new THREE.Mesh(new THREE.BoxGeometry(w, h, 1.0), wallMat); wl.position.set(x, y, -0.2); group.add(wl);
   }
   // outer door frame (brushed steel)
-  const fmat = new THREE.MeshStandardMaterial({ color: 0x40434b, metalness: 0.85, roughness: 0.42, roughnessMap: brushed, envMapIntensity: 1.1 });
+  const fmat = new THREE.MeshStandardMaterial({ color: 0x2f333a, metalness: 0.85, roughness: 0.32, roughnessMap: brushed, envMapIntensity: 0.9 });
   const fw = 10.0, fh = 5.8, tk = 0.22;
   ([[fw, tk, 0, fh / 2], [fw, tk, 0, -fh / 2], [tk, fh, -fw / 2, 0], [tk, fh, fw / 2, 0]] as const)
     .forEach(([w, h, x, y]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.6), fmat); b.position.set(x, y, 0.42); group.add(b); });
@@ -221,7 +232,7 @@ function buildCabinet() {
     for (let s = 0; s < 22; s++) { const sl = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.34, 0.02), slotMat); sl.position.set(-4.35 + s * 0.415, dy, 0.21); group.add(sl); }
   }
   // DIN rails + meters
-  const railMat = new THREE.MeshStandardMaterial({ color: 0x6b7178, metalness: 0.9, roughness: 0.4, roughnessMap: brushed, envMapIntensity: 1.05 });
+  const railMat = new THREE.MeshStandardMaterial({ color: 0x565c63, metalness: 0.9, roughness: 0.28, roughnessMap: brushed, envMapIntensity: 0.9 });
   const meterXs: number[] = [];
   [1.15, -1.15].forEach((ry, r) => {
     const rail = new THREE.Mesh(new THREE.BoxGeometry(8.7, 0.34, 0.12), railMat); rail.position.set(0, ry, 0); group.add(rail);
@@ -229,7 +240,7 @@ function buildCabinet() {
   });
 
   // ---- RS485 daisy-chain (teal) touching each meter, then out to a switch ----
-  const rsMat = new THREE.MeshStandardMaterial({ color: 0x0f766e, metalness: 0.2, roughness: 0.6 });
+  const rsMat = new THREE.MeshStandardMaterial({ color: 0x3a4048, metalness: 0.25, roughness: 0.62 });
   const tube = (pts: THREE.Vector3[], rad = 0.05) => { const cv = new THREE.CatmullRomCurve3(pts); return new THREE.Mesh(new THREE.TubeGeometry(cv, Math.max(16, pts.length * 8), rad, 10, false), rsMat); };
   // horizontal bus per row + drop stubs to each meter
   for (const ry of [1.15, -1.15]) {
@@ -248,13 +259,13 @@ function buildCabinet() {
   for (let i = 0; i < 8; i++) {
     const px = -0.7 + i * 0.2;
     const port = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.16, 0.04), new THREE.MeshStandardMaterial({ color: 0x0a0b0e, roughness: 0.5 })); port.position.set(px, -0.08, 0.46); sw.add(port);
-    const lm = new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x22c55e, emissiveIntensity: 2, roughness: 0.3 });
+    const lm = new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x22d3ee, emissiveIntensity: 2, roughness: 0.3 });
     const ld = new THREE.Mesh(new THREE.SphereGeometry(0.025, 10, 10), lm); ld.position.set(px, 0.12, 0.46); sw.add(ld); swLeds.push(lm);
   }
 
   // ---- CLOUD / WEB node (top-right) ----
-  const cloud = new THREE.Group(); cloud.position.set(5.4, 3.7, 0.2); group.add(cloud);
-  const cloudMat = new THREE.MeshStandardMaterial({ color: 0x0a2540, emissive: 0x2dd4ff, emissiveIntensity: 1.1, metalness: 0.2, roughness: 0.4, transparent: true, opacity: 0.92 });
+  const cloud = new THREE.Group(); cloud.position.set(4.9, 3.85, 0.2); group.add(cloud);
+  const cloudMat = new THREE.MeshStandardMaterial({ color: 0x0a2540, emissive: 0x2dd4ff, emissiveIntensity: 1.6, metalness: 0.2, roughness: 0.4, transparent: true, opacity: 0.82 });
   for (const [r, dx, dy] of [[0.5, 0, 0], [0.38, -0.5, -0.08], [0.34, 0.5, -0.05], [0.3, -0.25, 0.28], [0.3, 0.28, 0.26]] as const) {
     const cs = new THREE.Mesh(new THREE.SphereGeometry(r, 24, 24), cloudMat); cs.position.set(dx, dy, 0); cloud.add(cs);
   }
@@ -279,7 +290,7 @@ function buildCabinet() {
   const update = (t: number) => {
     for (const m of minis) m.update(t);
     swLeds.forEach((lm, i) => { lm.emissiveIntensity = 0.8 + Math.max(0, Math.sin(t * 4 + i * 1.3)) * 2.4; });
-    (cloudMat as THREE.MeshStandardMaterial).emissiveIntensity = 0.9 + Math.sin(t * 1.8) * 0.4;
+    (cloudMat as THREE.MeshStandardMaterial).emissiveIntensity = 1.7 + Math.sin(t * 1.8) * 0.4;
     cloud.rotation.y = Math.sin(t * 0.3) * 0.2;
     pulses.forEach((p, i) => { const u = (t * 0.11 + i / NP) % 1; const pt = flow.getPoint(u); p.position.copy(pt); const sc = 0.6 + Math.sin(u * Math.PI) * 0.8; p.scale.setScalar(sc); });
   };
@@ -293,29 +304,31 @@ export default function MeterTwin({ kind = "both", height }: { kind?: Kind; heig
     let w = mount.clientWidth || 800, h = mount.clientHeight || 480;
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); renderer.setSize(w, h);
-    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.9; renderer.outputColorSpace = THREE.SRGBColorSpace;
+    const cab = kind === "cabinet";
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = cab ? 0.82 : 0.9; renderer.outputColorSpace = THREE.SRGBColorSpace;
     mount.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, w / h, 0.1, 100);
     const pmrem = new THREE.PMREMGenerator(renderer); const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environment = envTex;
     const keyL = new THREE.DirectionalLight(0xffffff, 1.15); keyL.position.set(-5, 7, 5); scene.add(keyL);
-    const rimL = new THREE.DirectionalLight(0x88aaff, 1.1); rimL.position.set(6, 2, -5); scene.add(rimL);
-    const warmL = new THREE.DirectionalLight(0xffe4b8, 0.22); warmL.position.set(3, -2, 4); scene.add(warmL);
-    const frontL = new THREE.DirectionalLight(0xcfe0ff, 0.26); frontL.position.set(0.5, 0.6, 9); scene.add(frontL);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.14));
+    // cabinet: restrained cool rim + hard-cut fills to hold near-black premium value range; other kinds keep their original brighter fill
+    const rimL = new THREE.DirectionalLight(cab ? 0x6fd0e0 : 0x88aaff, cab ? 0.55 : 1.1); rimL.position.set(6, 2, -5); scene.add(rimL);
+    const warmL = new THREE.DirectionalLight(0xffe4b8, cab ? 0.1 : 0.22); warmL.position.set(3, -2, 4); scene.add(warmL);
+    const frontL = new THREE.DirectionalLight(0xcfe0ff, cab ? 0.13 : 0.26); frontL.position.set(0.5, 0.6, 9); scene.add(frontL);
+    scene.add(new THREE.AmbientLight(cab ? 0xdde6ea : 0xffffff, cab ? 0.12 : 0.14));
 
     const parts: { group: THREE.Group; update: (t: number, dt: number) => void; baseRot: number; amp: number }[] = [];
     if (kind === "cabinet") { const p = buildCabinet(); p.group.scale.setScalar(0.62); p.group.rotation.x = -0.05; scene.add(p.group); parts.push({ ...p, baseRot: 0, amp: 0.05 }); }
     if (kind === "watt" || kind === "both") { const p = buildWatt(); p.group.position.x = kind === "both" ? -2.0 : 0; scene.add(p.group); parts.push({ ...p, baseRot: 0.3, amp: 0.5 }); }
     if (kind === "water" || kind === "both") { const p = buildWater(); p.group.position.set(kind === "both" ? 2.1 : 0, kind === "both" ? 0.05 : 0, 0); scene.add(p.group); parts.push({ ...p, baseRot: -0.3, amp: 0.5 }); }
-    if (kind === "cabinet") { camera.position.set(0.6, 0.35, 11.6); camera.lookAt(0.7, 0.15, 0); }
+    if (kind === "cabinet") { camera.position.set(2.7, 1.35, 11.1); camera.lookAt(0.2, 0.1, 0); }
     else if (kind === "both") { camera.position.set(0, 1.1, 10.5); camera.lookAt(0, 0, 0); }
     else if (kind === "water") { camera.position.set(2.4, 1.6, 6.8); camera.lookAt(0, 0.2, 0); }
     else { camera.position.set(2.4, 1.0, 6.4); camera.lookAt(0, 0.1, 0); }
 
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(w, h), 0.34, 0.4, 0.92));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(w, h), cab ? 0.4 : 0.34, cab ? 0.45 : 0.4, cab ? 0.95 : 0.92));
     composer.addPass(new OutputPass());
 
     const clock = new THREE.Clock(); let raf = 0;
