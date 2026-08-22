@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import EquipmentShowcase from "@/components/EquipmentShowcase";
+import { HeroBlueprint } from "@/components/Blueprint";
 
 const steps = [
   { icon: "grid", t: "ติดตั้งมิเตอร์ต่อห้อง", d: "แต่ละห้องมีมิเตอร์ไฟและมิเตอร์น้ำ ส่งค่าเข้าระบบเอง" },
@@ -13,6 +14,7 @@ export default function Home() {
   return (
     <div className="public-bg">
       <section className="hero-band dark-band">
+        <HeroBlueprint />
         <div className="landing">
           <nav className="public-nav">
             <div className="public-brand"><img className="logo-img logo-invert" src="/logo.jpg" alt="CTRL" /> <span className="pb-tag">monitoring &amp; billing</span></div>

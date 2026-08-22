@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/store/hooks";
 import Link from "next/link";
 import { loginThunk } from "@/store/authSlice";
+import { LoginBlueprint } from "@/components/Blueprint";
 
 const ROLES = [
   { label: "Platform Admin", id: "admin", pw: "admin1234" },
@@ -38,6 +39,7 @@ export default function LoginPage() {
   return (
     <div className="login-split">
       <aside className="login-hero">
+        <LoginBlueprint />
         <div className="lh-top">
           <img className="lh-logo" src="/logo.jpg" alt="CTRL" />
         </div>
