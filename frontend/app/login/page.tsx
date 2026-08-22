@@ -41,7 +41,7 @@ export default function LoginPage() {
       <aside className="login-hero">
         <LoginBlueprint />
         <div className="lh-top">
-          <img className="lh-logo" src="/logo.jpg" alt="CTRL" />
+          <img className="lh-logo" src="/logo.png" alt="CTRL" />
         </div>
         <div className="lh-body">
           <div className="lh-eyebrow">Water · Electric · Billing</div>
@@ -65,7 +65,7 @@ export default function LoginPage() {
       </aside>
       <div className="login-form-side">
       <div className="auth-card">
-        <img className="logo-lg-img" src="/logo.jpg" alt="CTRL" />
+        <img className="logo-lg-img" src="/logo.png" alt="CTRL" />
         <h2>เข้าสู่ระบบ</h2>
         <p className="sub">CTRL — มอนิเตอร์น้ำ-ไฟ และบิลรายเดือน</p>
         {notice && <div className="ok-msg">{notice}</div>}

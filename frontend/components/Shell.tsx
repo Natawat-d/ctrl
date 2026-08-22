@@ -31,7 +31,7 @@ export default function Shell({ title, sub, actions, children }) {
     <div className="shell">
       <aside className="sidebar">
         <div className="side-brand">
-          <img className="logo-img" src="/logo.jpg" alt="CTRL" />
+          <img className="logo-img" src="/logo.png" alt="CTRL" />
         </div>
         <nav className="side-nav">
           {NAV.map((it) => (
