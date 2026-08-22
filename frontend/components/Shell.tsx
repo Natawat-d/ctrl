@@ -17,6 +17,10 @@ export default function Shell({ title, sub, actions, children }) {
   const router = useRouter();
   const user = typeof window !== "undefined" ? getUser() : null;
 
+  const displayName = user?.display_name || "ผู้ใช้";
+  const roleLabel = user?.role === "owner" ? "เจ้าของอาคาร" : user?.role || "";
+  const initials = displayName.trim().charAt(0).toUpperCase() || "U";
+
   function logout() {
     localStorage.removeItem("akr_token");
     localStorage.removeItem("akr_user");
@@ -37,9 +41,14 @@ export default function Shell({ title, sub, actions, children }) {
             </Link>
           ))}
         </nav>
-        <div className="side-user">
-          <div className="side-user-name">{user?.display_name || "ผู้ใช้"}</div>
-          <div className="side-user-role">{user?.role === "owner" ? "เจ้าของอาคาร" : user?.role || ""}</div>
+        <div className="side-bottom">
+          <div className="side-user">
+            <div className="av">{initials}</div>
+            <div className="who">
+              <div className="nm">{displayName}</div>
+              <div className="rl">{roleLabel}</div>
+            </div>
+          </div>
           <button className="side-logout" onClick={logout}>
             <Icon name="logout" /> ออกจากระบบ
           </button>
