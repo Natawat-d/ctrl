@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- soft ground behind the coil -->
+  <ellipse cx="120" cy="122" rx="60" ry="52" fill="currentColor" opacity="0.05" stroke="none"/>
+  <!-- cable-tie strap band (soft fill under the strap) -->
+  <rect x="107" y="76" width="26" height="92" rx="12" fill="currentColor" opacity="0.06" stroke="none"/>
+
+  <!-- lead-out to the stripped end (top-right) -->
+  <path d="M162 90 C 172 80 180 74 189 68"/>
+  <!-- lead-out to the plug (bottom-left) -->
+  <path d="M78 150 C 72 158 68 161 62 162"/>
+
+  <!-- stripped end: cut jacket edge + fanned copper strands -->
+  <g stroke-width="2.5">
+    <ellipse cx="189" cy="68" rx="4.5" ry="9" transform="rotate(-45 189 68)" fill="currentColor" opacity="0.12"/>
+    <path d="M191 63 C 199 55 205 49 212 43"/>
+    <path d="M193 66 C 202 61 209 58 217 56"/>
+    <path d="M193 70 C 203 70 210 72 218 76"/>
+    <path d="M191 73 C 199 80 204 84 209 90"/>
+    <!-- twist ticks on the strands -->
+    <g stroke-width="1.5" opacity="0.55">
+      <path d="M201 49 l3 3.5"/>
+      <path d="M207 55 l3.5 2"/>
+      <path d="M205 71 l3.5 -1.5"/>
+      <path d="M200 79 l3 3.5"/>
+    </g>
+  </g>
+  <!-- copper strand tips -->
+  <g fill="currentColor" opacity="0.9" stroke="none">
+    <circle cx="212" cy="43" r="2.3"/>
+    <circle cx="217" cy="56" r="2.3"/>
+    <circle cx="218" cy="76" r="2.3"/>
+    <circle cx="209" cy="90" r="2.3"/>
+  </g>
+
+  <!-- the coiled cable bundle -->
+  <ellipse cx="120" cy="90" rx="45" ry="18"/>
+  <ellipse cx="120" cy="108" rx="47" ry="19"/>
+  <ellipse cx="120" cy="126" rx="46" ry="19"/>
+  <ellipse cx="120" cy="144" rx="43" ry="17"/>
+  <!-- coil sheen hairlines -->
+  <g stroke-width="1.5" opacity="0.5">
+    <path d="M87 86 A 37 13 0 0 1 114 82"/>
+    <path d="M85 104 A 39 14 0 0 1 115 99"/>
+    <path d="M87 122 A 38 14 0 0 1 116 117"/>
+    <path d="M90 140 A 35 12 0 0 1 116 135"/>
+  </g>
+
+  <!-- cable tie: strap over the bundle + zip head + tail -->
+  <g stroke-width="2.5">
+    <path d="M110 72 L 110 158"/>
+    <path d="M130 72 L 130 158"/>
+    <rect x="105" y="150" width="30" height="18" rx="4"/>
+    <path d="M120 154 L 120 164" stroke-width="1.5" opacity="0.6"/>
+    <path d="M135 158 C 149 160 156 151 152 141"/>
+  </g>
+
+  <!-- plug / connector assembly (bottom-left) -->
+  <g>
+    <!-- strain-relief collar -->
+    <rect x="49" y="161" width="22" height="14" rx="4"/>
+    <path d="M54 164 L 54 172 M60 163 L 60 173 M66 164 L 66 172" stroke-width="1.5" opacity="0.55"/>
+    <!-- body -->
+    <rect x="40" y="175" width="42" height="30" rx="9"/>
+    <!-- grip ridges -->
+    <path d="M45 183 L 77 183 M45 190 L 77 190 M45 197 L 77 197" stroke-width="2.5" opacity="0.55"/>
+    <!-- nose -->
+    <rect x="51" y="204" width="20" height="10" rx="3"/>
+    <!-- pins -->
+    <path d="M59 214 L 59 226"/>
+    <path d="M69 214 L 69 226"/>
+  </g>
+</svg>

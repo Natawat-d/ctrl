@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <!-- soft body fill -->
+  <rect x="60" y="28" width="120" height="184" rx="10" fill="currentColor" opacity="0.06"/>
+
+  <!-- main body outline -->
+  <rect x="60" y="28" width="120" height="184" rx="10" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+
+  <!-- top ventilation grille -->
+  <path d="M80 50h80" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6">
+    <path d="M84 40v8"/>
+    <path d="M93 40v8"/>
+    <path d="M102 40v8"/>
+    <path d="M111 40v8"/>
+    <path d="M120 40v8"/>
+    <path d="M129 40v8"/>
+    <path d="M138 40v8"/>
+    <path d="M147 40v8"/>
+    <path d="M156 40v8"/>
+  </g>
+
+  <!-- LCD readout panel -->
+  <rect x="72" y="60" width="96" height="46" rx="6" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+  <rect x="76" y="64" width="88" height="38" rx="3" fill="currentColor" opacity="0.06"/>
+
+  <!-- segmented digit cells (no text) -->
+  <g stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity="0.55">
+    <rect x="82" y="70" width="10" height="24" rx="1.5"/>
+    <path d="M82 82h10"/>
+    <rect x="96" y="70" width="10" height="24" rx="1.5"/>
+    <path d="M96 82h10"/>
+    <rect x="110" y="70" width="10" height="24" rx="1.5"/>
+    <path d="M110 82h10"/>
+    <rect x="124" y="70" width="10" height="24" rx="1.5"/>
+    <path d="M124 82h10"/>
+    <rect x="144" y="70" width="10" height="24" rx="1.5"/>
+    <path d="M144 82h10"/>
+  </g>
+  <!-- decimal point between groups -->
+  <circle cx="139" cy="92" r="1.8" fill="currentColor" opacity="0.9"/>
+
+  <!-- indicator LED + pulse ring -->
+  <circle cx="82" cy="126" r="6.5" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+  <circle cx="82" cy="126" r="3.4" fill="currentColor" opacity="0.9"/>
+  <!-- status dots row -->
+  <g fill="currentColor">
+    <circle cx="126" cy="126" r="2.4" opacity="0.9"/>
+    <circle cx="140" cy="126" r="2.4" opacity="0.4"/>
+    <circle cx="154" cy="126" r="2.4" opacity="0.4"/>
+  </g>
+
+  <!-- terminal block divider -->
+  <path d="M60 150h120" stroke="currentColor" stroke-width="2.5"/>
+
+  <!-- terminals: wire ports -->
+  <g stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+    <rect x="65" y="158" width="20" height="14" rx="2" fill="currentColor" opacity="0.12"/>
+    <rect x="95" y="158" width="20" height="14" rx="2" fill="currentColor" opacity="0.12"/>
+    <rect x="125" y="158" width="20" height="14" rx="2" fill="currentColor" opacity="0.12"/>
+    <rect x="155" y="158" width="20" height="14" rx="2" fill="currentColor" opacity="0.12"/>
+  </g>
+  <!-- screw heads with slots -->
+  <g stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
+    <circle cx="75" cy="190" r="7" stroke-width="2.5"/>
+    <path d="M70.5 185.5l9 9" stroke-width="1.5"/>
+    <circle cx="105" cy="190" r="7" stroke-width="2.5"/>
+    <path d="M100.5 185.5l9 9" stroke-width="1.5"/>
+    <circle cx="135" cy="190" r="7" stroke-width="2.5"/>
+    <path d="M130.5 185.5l9 9" stroke-width="1.5"/>
+    <circle cx="165" cy="190" r="7" stroke-width="2.5"/>
+    <path d="M160.5 185.5l9 9" stroke-width="1.5"/>
+  </g>
+
+  <!-- DIN-rail mounting clip hints (side tabs) -->
+  <path d="M60 118v18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+  <path d="M180 118v18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+</svg>

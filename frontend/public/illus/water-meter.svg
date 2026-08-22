@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    <!-- soft ground shadow -->
+    <ellipse cx="120" cy="214" rx="70" ry="7" fill="currentColor" opacity="0.06" stroke="none"/>
+
+    <!-- ===== LEFT COUPLING ===== -->
+    <!-- pipe stub -->
+    <rect x="28" y="148" width="32" height="26" rx="4" fill="currentColor" opacity="0.06" stroke="none"/>
+    <rect x="28" y="148" width="32" height="26" rx="4" stroke-width="4"/>
+    <!-- bore opening -->
+    <ellipse cx="31" cy="161" rx="4" ry="10" stroke-width="2.5"/>
+    <!-- threads -->
+    <line x1="38" y1="151" x2="38" y2="171" stroke-width="1.5" opacity="0.55"/>
+    <line x1="44" y1="151" x2="44" y2="171" stroke-width="1.5" opacity="0.55"/>
+    <line x1="50" y1="151" x2="50" y2="171" stroke-width="1.5" opacity="0.55"/>
+    <!-- hex coupling nut -->
+    <path d="M60 146 L64 140 L70 140 L74 146 L74 176 L70 182 L64 182 L60 176 Z" fill="currentColor" opacity="0.12" stroke="none"/>
+    <path d="M60 146 L64 140 L70 140 L74 146 L74 176 L70 182 L64 182 L60 176 Z" stroke-width="2.5"/>
+
+    <!-- ===== RIGHT COUPLING ===== -->
+    <rect x="180" y="148" width="32" height="26" rx="4" fill="currentColor" opacity="0.06" stroke="none"/>
+    <rect x="180" y="148" width="32" height="26" rx="4" stroke-width="4"/>
+    <ellipse cx="209" cy="161" rx="4" ry="10" stroke-width="2.5"/>
+    <line x1="202" y1="151" x2="202" y2="171" stroke-width="1.5" opacity="0.55"/>
+    <line x1="196" y1="151" x2="196" y2="171" stroke-width="1.5" opacity="0.55"/>
+    <line x1="190" y1="151" x2="190" y2="171" stroke-width="1.5" opacity="0.55"/>
+    <path d="M180 146 L176 140 L170 140 L166 146 L166 176 L170 182 L176 182 L180 176 Z" fill="currentColor" opacity="0.12" stroke="none"/>
+    <path d="M180 146 L176 140 L170 140 L166 146 L166 176 L170 182 L176 182 L180 176 Z" stroke-width="2.5"/>
+
+    <!-- ===== METER HOUSING (pipe body) ===== -->
+    <rect x="74" y="134" width="92" height="54" rx="14" fill="currentColor" opacity="0.06" stroke="none"/>
+    <rect x="74" y="134" width="92" height="54" rx="14" stroke-width="4"/>
+    <!-- flow direction guide -->
+    <line x1="90" y1="176" x2="146" y2="176" stroke-width="1.5" opacity="0.5"/>
+    <path d="M143 172 L150 176 L143 180" stroke-width="1.5" opacity="0.5"/>
+    <!-- mounting bolts on housing shoulders -->
+    <circle cx="86" cy="146" r="2" fill="currentColor" opacity="0.5" stroke="none"/>
+    <circle cx="154" cy="146" r="2" fill="currentColor" opacity="0.5" stroke="none"/>
+
+    <!-- ===== PULSE-OUTPUT LEAD ===== -->
+    <path d="M128 188 C130 200 146 201 158 205 C165 207 172 205 177 199" stroke-width="2.5"/>
+    <circle cx="128" cy="188" r="3" fill="currentColor" opacity="0.9" stroke="none"/>
+    <!-- connector plug -->
+    <path d="M172 194 L180 196 L177 204" stroke-width="2.5"/>
+
+    <!-- ===== REGISTER DIAL ===== -->
+    <!-- mounting collar onto body -->
+    <path d="M98 132 Q120 122 142 132" stroke-width="2.5"/>
+    <!-- dial glass -->
+    <circle cx="120" cy="86" r="46" fill="currentColor" opacity="0.06" stroke="none"/>
+    <circle cx="120" cy="86" r="46" stroke-width="4"/>
+    <circle cx="120" cy="86" r="39" stroke-width="2.5"/>
+    <circle cx="120" cy="86" r="31" stroke-width="1.5" opacity="0.45"/>
+
+    <!-- major tick marks (12) -->
+    <g stroke-width="2.5">
+      <line x1="120" y1="42" x2="120" y2="50"/>
+      <line x1="142" y1="47.9" x2="138" y2="54.8"/>
+      <line x1="158.1" y1="64" x2="151.2" y2="68"/>
+      <line x1="164" y1="86" x2="156" y2="86"/>
+      <line x1="158.1" y1="108" x2="151.2" y2="104"/>
+      <line x1="142" y1="124.1" x2="138" y2="117.2"/>
+      <line x1="120" y1="130" x2="120" y2="122"/>
+      <line x1="98" y1="124.1" x2="102" y2="117.2"/>
+      <line x1="81.9" y1="108" x2="88.8" y2="104"/>
+      <line x1="76" y1="86" x2="84" y2="86"/>
+      <line x1="81.9" y1="64" x2="88.8" y2="68"/>
+      <line x1="98" y1="47.9" x2="102" y2="54.8"/>
+    </g>
+    <!-- minor tick marks (12) -->
+    <g stroke-width="1.5" opacity="0.5">
+      <line x1="131.4" y1="43.5" x2="130.1" y2="48.3"/>
+      <line x1="151.1" y1="54.9" x2="147.6" y2="58.4"/>
+      <line x1="162.5" y1="74.6" x2="157.7" y2="75.9"/>
+      <line x1="162.5" y1="97.4" x2="157.7" y2="96.1"/>
+      <line x1="151.1" y1="117.1" x2="147.6" y2="113.6"/>
+      <line x1="131.4" y1="128.5" x2="130.1" y2="123.7"/>
+      <line x1="108.6" y1="128.5" x2="109.9" y2="123.7"/>
+      <line x1="88.9" y1="117.1" x2="92.4" y2="113.6"/>
+      <line x1="77.5" y1="97.4" x2="82.3" y2="96.1"/>
+      <line x1="77.5" y1="74.6" x2="82.3" y2="75.9"/>
+      <line x1="88.9" y1="54.9" x2="92.4" y2="58.4"/>
+      <line x1="108.6" y1="43.5" x2="109.9" y2="48.3"/>
+    </g>
+
+    <!-- odometer window -->
+    <rect x="102" y="97" width="36" height="13" rx="2.5" stroke-width="1.5" opacity="0.6"/>
+    <line x1="111" y1="97" x2="111" y2="110" stroke-width="1" opacity="0.45"/>
+    <line x1="120" y1="97" x2="120" y2="110" stroke-width="1" opacity="0.45"/>
+    <line x1="129" y1="97" x2="129" y2="110" stroke-width="1" opacity="0.45"/>
+
+    <!-- needle -->
+    <line x1="120" y1="86" x2="147" y2="65" stroke-width="2.5"/>
+    <line x1="120" y1="86" x2="113" y2="92" stroke-width="2.5" opacity="0.6"/>
+    <circle cx="120" cy="86" r="4.5" fill="currentColor" opacity="0.9" stroke="none"/>
+    <circle cx="120" cy="86" r="4.5" stroke-width="2.5"/>
+
+    <!-- glass highlight -->
+    <path d="M94 68 Q102 58 116 56" stroke-width="1.5" opacity="0.4"/>
+  </g>
+</svg>
