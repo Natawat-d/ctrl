@@ -409,12 +409,13 @@ function buildCabinet() {
   {
     const vc = document.createElement("canvas"); vc.width = vc.height = 512; const vx = vc.getContext("2d")!;
     // raking pool of light offset to camera-left so one side of the cabinet gradients into shadow; deeper corners
-    const grd = vx.createRadialGradient(210, 215, 30, 256, 256, 300);
-    grd.addColorStop(0, "#1b1f26"); grd.addColorStop(0.5, "#0a0c10"); grd.addColorStop(1, "#040507");
+    const grd = vx.createRadialGradient(210, 205, 30, 256, 256, 340);
+    grd.addColorStop(0, "#1a1e25"); grd.addColorStop(0.42, "#101318"); grd.addColorStop(0.78, "#0a0a0a"); grd.addColorStop(1, "#0a0a0a");
     vx.fillStyle = grd; vx.fillRect(0, 0, 512, 512);
     const vt = new THREE.CanvasTexture(vc); vt.colorSpace = THREE.SRGBColorSpace;
-    const vig = new THREE.Mesh(new THREE.PlaneGeometry(34, 26), new THREE.MeshBasicMaterial({ map: vt, depthWrite: false, toneMapped: true }));
-    vig.position.set(0.5, 0.3, -3.2); group.add(vig);
+    // large full-frustum backdrop; edges land on the site's #0a0a0a so the canvas blends seamlessly into the .twin-band (toneMapped:false keeps the hex literal)
+    const vig = new THREE.Mesh(new THREE.PlaneGeometry(70, 42), new THREE.MeshBasicMaterial({ map: vt, depthWrite: false, toneMapped: false }));
+    vig.position.set(0.5, 0.6, -5.5); group.add(vig);
   }
   // enclosure back + inner panel + side walls (depth)
   const back = new THREE.Mesh(new RoundedBoxGeometry(9.9, 5.7, 0.4, 6, 0.14),
@@ -538,7 +539,7 @@ function buildCabinet() {
   group.add(new THREE.Mesh(new THREE.TubeGeometry(strapCv, 18, 0.03, 6, false), strapMat));
 
   // ---- GROUND: dark floor slab + soft radial contact-shadow pool so the cabinet is anchored, not floating ----
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(46, 26),
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(84, 48),
     new THREE.MeshStandardMaterial({ color: 0x070809, metalness: 0.35, roughness: 0.52, envMapIntensity: 0.45 }));
   floor.rotation.x = -Math.PI / 2; floor.position.set(0, -3.95, 0.1); group.add(floor);
   {
@@ -832,22 +833,24 @@ export default function MeterTwin({ kind = "both", height }: { kind?: Kind; heig
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = cab ? 0.82 : 0.9; renderer.outputColorSpace = THREE.SRGBColorSpace;
     mount.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
+    // fade the far floor edge into the site tone so the ground melts into the backdrop with no visible horizon seam
+    if (cab) scene.fog = new THREE.Fog(0x0a0a0a, 16, 34);
     const camera = new THREE.PerspectiveCamera(34, w / h, 0.1, 100);
     const pmrem = new THREE.PMREMGenerator(renderer); const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environment = envTex;
     // single strong raking key pushed further camera-left/high so the far side of the cabinet gradients into shadow
     const keyL = new THREE.DirectionalLight(0xffffff, cab ? 1.4 : 1.15); keyL.position.set(cab ? -7 : -5, cab ? 8 : 7, 5); scene.add(keyL);
     if (cab) {
-      keyL.castShadow = true; keyL.shadow.mapSize.set(2048, 2048);
+      keyL.castShadow = true; keyL.shadow.mapSize.set(1024, 1024);
       keyL.shadow.bias = -0.0004; keyL.shadow.normalBias = 0.04;
       const sc = keyL.shadow.camera; sc.left = -6; sc.right = 6; sc.top = 6; sc.bottom = -6; sc.near = 0.5; sc.far = 40; sc.updateProjectionMatrix();
     }
-    // cabinet: restrained cool rim + hard-cut fills to hold near-black premium value range; other kinds keep their original brighter fill
-    const rimL = new THREE.DirectionalLight(cab ? 0x6fd0e0 : 0x88aaff, cab ? 0.55 : 1.1); rimL.position.set(6, 2, -5); scene.add(rimL);
-    // cabinet only: cool back-LEFT-high rim to trace the enclosure silhouette off pure black (monochrome, dim)
-    if (cab) { const rimBL = new THREE.DirectionalLight(0xaeb6bd, 0.7); rimBL.position.set(-6, 5, -5); scene.add(rimBL); }
-    const warmL = new THREE.DirectionalLight(0xffe4b8, cab ? 0.08 : 0.22); warmL.position.set(3, -2, 4); scene.add(warmL);
-    const frontL = new THREE.DirectionalLight(0xcfe0ff, cab ? 0.1 : 0.26); frontL.position.set(0.5, 0.6, 9); scene.add(frontL);
-    scene.add(new THREE.AmbientLight(cab ? 0xdde6ea : 0xffffff, cab ? 0.1 : 0.14));
+    // cabinet: lean 3-light rig (key + cool rim + ambient) — the PMREM RoomEnvironment carries the fill, so the extra dim fills were dropped to cut per-fragment cost
+    const rimL = new THREE.DirectionalLight(cab ? 0x8fd6e6 : 0x88aaff, cab ? 0.7 : 1.1); rimL.position.set(6, 2, -5); scene.add(rimL);
+    if (!cab) {
+      const warmL = new THREE.DirectionalLight(0xffe4b8, 0.22); warmL.position.set(3, -2, 4); scene.add(warmL);
+      const frontL = new THREE.DirectionalLight(0xcfe0ff, 0.26); frontL.position.set(0.5, 0.6, 9); scene.add(frontL);
+    }
+    scene.add(new THREE.AmbientLight(cab ? 0xdde6ea : 0xffffff, cab ? 0.2 : 0.14));
 
     const parts: { group: THREE.Group; update: (t: number, dt: number) => void; baseRot: number; amp: number }[] = [];
     if (kind === "cabinet") {
