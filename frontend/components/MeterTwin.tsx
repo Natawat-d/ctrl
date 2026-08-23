@@ -636,7 +636,7 @@ function buildCabinet() {
   });
 
   // ---- RS485 daisy bus raised to terminal height, with T-tap drops, then out to the switch ----
-  const rsMat = new THREE.MeshStandardMaterial({ color: 0x1d5560, metalness: 0.25, roughness: 0.55, emissive: 0x18c6d8, emissiveIntensity: 0.9 });
+  const rsMat = new THREE.MeshStandardMaterial({ color: 0x16323a, metalness: 0.25, roughness: 0.6, emissive: 0x18c6d8, emissiveIntensity: 0.28 });
   const tapMat = new THREE.MeshStandardMaterial({ color: 0x0e1418, metalness: 0.4, roughness: 0.5 });
   const tube = (pts: THREE.Vector3[], rad = 0.05) => { const cv = new THREE.CatmullRomCurve3(pts); return new THREE.Mesh(new THREE.TubeGeometry(cv, Math.max(16, pts.length * 8), rad, 10, false), rsMat); };
   const tTapGeo = new THREE.BoxGeometry(0.16, 0.14, 0.16);
@@ -796,16 +796,38 @@ function buildCabinet() {
   const labSw = makeNodeLabel("SWITCH", 1.4, 0.38); labSw.position.set(8.2, -1.15, 0.85); group.add(labSw);
   const labSv = makeNodeLabel("SERVER", 1.4, 0.38); labSv.position.set(12.3, -1.15, 0.45); group.add(labSv);
 
-  // ---- animated data pulses (meters → switch → server) along the raised bus ----
-  const flow = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-3.85, busY(-1.15), 0.55), new THREE.Vector3(3.85, busY(-1.15), 0.55),
-    new THREE.Vector3(5.2, 0.05, 0.7), switchPos.clone(),
-    new THREE.Vector3(9.6, 0.1, 0.75), new THREE.Vector3(10.8, 0.1, 0.6), serverPos.clone().add(new THREE.Vector3(-1.2, -0.05, 0.2)),
-  ]);
-  const pulseMat = new THREE.MeshStandardMaterial({ color: 0x67e8ff, emissive: 0x67e8ff, emissiveIntensity: 4, roughness: 0.2 });
-  const pulses: THREE.Mesh[] = [];
-  const NP = 7;
-  for (let i = 0; i < NP; i++) { const p = new THREE.Mesh(new THREE.SphereGeometry(0.07, 10, 10), pulseMat); group.add(p); pulses.push(p); }
+  // ---- realistic RS485 Modbus poll: a request packet runs server → switch → ONE meter, the meter answers back → server, then the master moves to the next meter (half-duplex, one at a time) ----
+  const serverEnd = serverPos.clone().add(new THREE.Vector3(-1.2, -0.05, 0.2));
+  // shared trunk (server → switch → cabinet entry at the bottom bus), reused by every meter's path
+  const trunk = [
+    serverEnd,
+    new THREE.Vector3(10.8, 0.1, 0.6), new THREE.Vector3(9.6, 0.1, 0.75), switchPos.clone(),
+    new THREE.Vector3(6.6, 0.1, 0.8), new THREE.Vector3(5.2, 0.05, 0.7), new THREE.Vector3(4.6, -1.1, 0.6),
+    new THREE.Vector3(3.85, busY(-1.15), 0.55),
+  ];
+  // one server→meter path per meter (poll bottom row first, then top; left→right)
+  const pollOrder = [...meterPos].sort((a, b) => (b.row - a.row) || (a.x - b.x));
+  const pollPaths = pollOrder.map((m) => {
+    const branch: THREE.Vector3[] = [];
+    if (m.y < 0) {                                   // bottom row: run the bottom bus out to the meter
+      branch.push(new THREE.Vector3((3.85 + m.x) / 2, busY(-1.15) - busSag, 0.55), new THREE.Vector3(m.x, busY(-1.15), 0.55));
+    } else {                                         // top row: up the riser, then along the top bus
+      branch.push(new THREE.Vector3(3.85, (busY(-1.15) + busY(1.15)) / 2, 0.55), new THREE.Vector3(3.85, busY(1.15), 0.55),
+        new THREE.Vector3((3.85 + m.x) / 2, busY(1.15) - busSag, 0.55), new THREE.Vector3(m.x, busY(1.15), 0.55));
+    }
+    branch.push(new THREE.Vector3(m.x, m.y - 0.84, 0.57), new THREE.Vector3(m.x, m.y - 0.25, 0.5)); // drop into the comm port
+    return new THREE.CatmullRomCurve3([...trunk, ...branch]);
+  });
+  // a single small "packet" (head + 2-sphere trail) — dimmed so it reads as data, not a flare
+  const pkColor = 0x67e8ff;
+  const pkHead = [0.058, 0.044, 0.03], pkGlow = [1.6, 1.0, 0.55];
+  const packet = [0, 1, 2].map((i) => {
+    const mat = new THREE.MeshStandardMaterial({ color: pkColor, emissive: pkColor, emissiveIntensity: pkGlow[i], roughness: 0.3 });
+    const s = new THREE.Mesh(new THREE.SphereGeometry(pkHead[i], 10, 10), mat); group.add(s); return s;
+  });
+  const NM = pollPaths.length;
+  const reqDur = 0.8, dwellM = 0.12, rspDur = 0.8, dwellS = 0.16;   // request → read → response → idle, per meter
+  const slot = reqDur + dwellM + rspDur + dwellS;
 
   const update = (t: number) => {
     for (const m of minis) m.update(t);
@@ -816,7 +838,22 @@ function buildCabinet() {
     pwrLedMat.emissiveIntensity = 1.2 + Math.sin(t * 2) * 0.2;
     edgeMat.emissiveIntensity = 1.2 + Math.max(0, Math.sin(t * 1.6)) * 0.8;
     bayLedMats.forEach((bm, i) => { bm.emissiveIntensity = 0.25 + Math.max(0, Math.sin(t * 3 + i * 1.7)) * 0.35; });
-    pulses.forEach((p, i) => { const u = (t * 0.11 + i / NP) % 1; const pt = flow.getPoint(u); p.position.copy(pt); const sc = 0.6 + Math.sin(u * Math.PI) * 0.8; p.scale.setScalar(sc); });
+    // sequential Modbus poll: pick the active meter + phase, run the packet out and back along that one path
+    const lt = t % (slot * NM);
+    const idx = Math.floor(lt / slot);
+    const s = lt - idx * slot;
+    const path = pollPaths[idx];
+    let u: number, fwd: boolean;
+    if (s < reqDur) { u = s / reqDur; fwd = true; }                                   // server → meter (request)
+    else if (s < reqDur + dwellM) { u = 1; fwd = true; }                              // meter reads
+    else if (s < reqDur + dwellM + rspDur) { u = 1 - (s - reqDur - dwellM) / rspDur; fwd = false; } // meter → server (response)
+    else { u = 0; fwd = false; }                                                      // master idle before next meter
+    const trail = fwd ? -1 : 1;                                                        // trailing spheres lag behind travel direction
+    packet.forEach((sp, i) => {
+      const uu = Math.min(1, Math.max(0, u + trail * i * 0.02));
+      sp.position.copy(path.getPoint(uu));
+      sp.visible = i === 0 || (u > 0.001 && u < 0.999);                                // hide the trail while parked at either end
+    });
   };
   return { group, update };
 }
