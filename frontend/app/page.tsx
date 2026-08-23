@@ -113,12 +113,20 @@ export default function Home() {
 
       {/* ===== 6. FOOTER ===== */}
       <footer className="uni-footer">
-        <div className="uni-footer-inner">
+        <div className="uni-footer-top">
           <div className="uni-footer-brand">
             <img className="logo-invert" src="/logo.png" alt="CTRL" />
             <p>ระบบมอนิเตอร์น้ำ-ไฟ และออกบิลรายเดือน สำหรับอาคารเช่า</p>
           </div>
-          <div className="uni-footer-meta">© {new Date().getFullYear()} CTRL — ctrlanywhere.com</div>
+          <nav className="uni-footer-links">
+            <a href="#features">คุณสมบัติ</a>
+            <a href="#hardware">อุปกรณ์</a>
+            <Link href="/login">เข้าสู่ระบบ</Link>
+            <Link href="/signup">สมัครใช้งาน</Link>
+          </nav>
+        </div>
+        <div className="uni-footer-bottom">
+          <span className="uni-footer-meta">© {new Date().getFullYear()} CTRL — ctrlanywhere.com</span>
         </div>
       </footer>
     </div>
