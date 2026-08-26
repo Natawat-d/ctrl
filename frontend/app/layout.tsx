@@ -1,5 +1,6 @@
 import "./globals.css";
 import ReduxProvider from "@/store/Provider";
+import SecretEntry from "@/components/SecretEntry";
 
 export const metadata = {
   title: "CTRL — มอนิเตอร์น้ำ-ไฟ และบิลรายเดือน",
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ReduxProvider>{children}</ReduxProvider>
+        <SecretEntry />
       </body>
     </html>
   );

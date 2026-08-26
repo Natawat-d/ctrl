@@ -46,7 +46,6 @@ export default function Home() {
           <nav className="uni-nav-links">
             <a className="uni-nav-link" href="#features">คุณสมบัติ</a>
             <a className="uni-nav-link" href="#hardware">อุปกรณ์</a>
-            <Link className="btn ghost on-dark" href="/login">เข้าสู่ระบบ</Link>
             <Link className="btn primary on-dark" href="/signup">สมัครใช้งาน</Link>
           </nav>
         </div>
@@ -107,7 +106,6 @@ export default function Home() {
         <p className="uni-cta-sub">เริ่มติดตั้งระบบมอนิเตอร์น้ำ-ไฟ และออกบิลรายเดือนให้อาคารของคุณวันนี้</p>
         <div className="uni-hero-cta">
           <Link className="btn primary on-dark uni-cta-primary" href="/signup">สมัครใช้งาน <span className="uni-arrow">→</span></Link>
-          <Link className="btn ghost on-dark" href="/login">เข้าสู่ระบบ</Link>
         </div>
       </section>
 
@@ -121,7 +119,6 @@ export default function Home() {
           <nav className="uni-footer-links">
             <a href="#features">คุณสมบัติ</a>
             <a href="#hardware">อุปกรณ์</a>
-            <Link href="/login">เข้าสู่ระบบ</Link>
             <Link href="/signup">สมัครใช้งาน</Link>
           </nav>
         </div>
