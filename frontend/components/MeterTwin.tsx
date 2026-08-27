@@ -660,8 +660,9 @@ function buildCabinet() {
     }
   }
   group.add(tube([new THREE.Vector3(3.85, busY(1.15), 0.55), new THREE.Vector3(3.85, busY(-1.15), 0.55)], 0.05)); // riser joining rows
-  const switchPos = new THREE.Vector3(6.4, -2.7, 1.2);
-  group.add(tube([new THREE.Vector3(3.85, busY(-1.15), 0.55), new THREE.Vector3(4.8, -2.3, 0.7), new THREE.Vector3(5.6, -2.55, 1.0), switchPos.clone().add(new THREE.Vector3(-0.25, 0.18, -0.1))], 0.055));
+  // SWITCH sits mid-height to the RIGHT of the cabinet (horizontal topology). RS485 exits the cabinet's right side and runs rightward to it.
+  const switchPos = new THREE.Vector3(8.2, 0.1, 0.8);
+  group.add(tube([new THREE.Vector3(3.85, busY(-1.15), 0.55), new THREE.Vector3(4.6, -1.1, 0.6), new THREE.Vector3(5.2, 0.05, 0.7), new THREE.Vector3(6.6, 0.1, 0.8), switchPos.clone().add(new THREE.Vector3(-1.0, -0.02, -0.05))], 0.055));
 
   // ---- managed network SWITCH: keyed RJ45 jacks + link/act LEDs + vents + DIN clip + label ----
   const sw = new THREE.Group(); sw.position.copy(switchPos); group.add(sw);
@@ -715,8 +716,8 @@ function buildCabinet() {
   const swLabel = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.22), new THREE.MeshStandardMaterial({ map: makeSwitchLabelTex(), roughness: 0.7, metalness: 0.1, envMapIntensity: 0.25 }));
   swLabel.position.set(0.5, 0.16, 0.478); sw.add(swLabel);
 
-  // ---- SERVER node (top-right): 2U rack chassis on a shelf — hot-swap bays, status LEDs, vents, rack ears ----
-  const serverPos = new THREE.Vector3(4.9, 3.4, 0.2);
+  // ---- SERVER node (RIGHT end, mid-height): 2U rack chassis on a shelf — hot-swap bays, status LEDs, vents, rack ears ----
+  const serverPos = new THREE.Vector3(12.3, 0.1, 0.4);
   const server = new THREE.Group(); server.position.copy(serverPos); group.add(server);
   // materials (dark brushed metal chassis + cyan LED accent only)
   const chassisMat = new THREE.MeshStandardMaterial({ color: 0x1b1e23, metalness: 0.7, roughness: 0.4, roughnessMap: brushed, envMapIntensity: 0.85 });
@@ -783,22 +784,22 @@ function buildCabinet() {
   // subtle cyan edge light-bar across the front bottom (hi-tech glow for bloom)
   const edgeBar = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.02, 0.03), edgeMat); edgeBar.position.set(0, -0.45, 0.6); server.add(edgeBar);
 
-  // switch → server uplink
-  group.add(tube([switchPos.clone().add(new THREE.Vector3(0.2, 0.3, 0)), new THREE.Vector3(6.2, -1, 0.8), new THREE.Vector3(5.9, 1, 0.5), new THREE.Vector3(5.4, 2.6, 0.4), serverPos.clone().add(new THREE.Vector3(0.2, -0.5, 0.2))],
+  // switch → server uplink (continues rightward)
+  group.add(tube([switchPos.clone().add(new THREE.Vector3(0.95, -0.02, -0.05)), new THREE.Vector3(9.6, 0.1, 0.75), new THREE.Vector3(10.8, 0.1, 0.6), serverPos.clone().add(new THREE.Vector3(-1.2, -0.05, 0.2))],
     0.055));
 
-  // ---- SCADA topology node labels (dark matte plaques, low bloom) beneath/near each node ----
+  // ---- SCADA topology node labels (dark matte plaques, low bloom) beneath/near each node, left → right ----
   const makeNodeLabel = (text: string, w: number, hgt: number) => new THREE.Mesh(new THREE.PlaneGeometry(w, hgt),
     new THREE.MeshStandardMaterial({ map: makeNodeLabelTex(text), roughness: 0.72, metalness: 0.1, envMapIntensity: 0.22, toneMapped: true }));
-  const labCab = makeNodeLabel("ตู้มิเตอร์", 1.75, 0.47); labCab.position.set(-3.4, 3.18, 0.72); group.add(labCab);
-  const labSw = makeNodeLabel("SWITCH", 1.3, 0.35); labSw.position.set(6.4, -3.55, 1.0); group.add(labSw);
-  const labSv = makeNodeLabel("SERVER", 1.3, 0.35); labSv.position.set(4.9, 2.42, 0.42); group.add(labSv);
+  const labCab = makeNodeLabel("ตู้มิเตอร์", 1.9, 0.5); labCab.position.set(-3.2, -3.42, 0.75); group.add(labCab);
+  const labSw = makeNodeLabel("SWITCH", 1.4, 0.38); labSw.position.set(8.2, -1.15, 0.85); group.add(labSw);
+  const labSv = makeNodeLabel("SERVER", 1.4, 0.38); labSv.position.set(12.3, -1.15, 0.45); group.add(labSv);
 
   // ---- animated data pulses (meters → switch → server) along the raised bus ----
   const flow = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-3.85, busY(-1.15), 0.55), new THREE.Vector3(3.85, busY(-1.15), 0.55),
-    new THREE.Vector3(4.8, -2.3, 0.7), switchPos.clone(),
-    new THREE.Vector3(6.2, -1, 0.8), new THREE.Vector3(5.9, 1, 0.5), new THREE.Vector3(5.4, 2.6, 0.4), serverPos.clone().add(new THREE.Vector3(0.2, -0.4, 0.2)),
+    new THREE.Vector3(5.2, 0.05, 0.7), switchPos.clone(),
+    new THREE.Vector3(9.6, 0.1, 0.75), new THREE.Vector3(10.8, 0.1, 0.6), serverPos.clone().add(new THREE.Vector3(-1.2, -0.05, 0.2)),
   ]);
   const pulseMat = new THREE.MeshStandardMaterial({ color: 0x67e8ff, emissive: 0x67e8ff, emissiveIntensity: 4, roughness: 0.2 });
   const pulses: THREE.Mesh[] = [];
@@ -850,7 +851,7 @@ export default function MeterTwin({ kind = "both", height }: { kind?: Kind; heig
 
     const parts: { group: THREE.Group; update: (t: number, dt: number) => void; baseRot: number; amp: number }[] = [];
     if (kind === "cabinet") {
-      const p = buildCabinet(); p.group.scale.setScalar(0.62); p.group.rotation.x = -0.05; scene.add(p.group); parts.push({ ...p, baseRot: 0, amp: 0.05 });
+      const p = buildCabinet(); p.group.scale.setScalar(0.58); p.group.rotation.x = -0.05; scene.add(p.group); parts.push({ ...p, baseRot: 0, amp: 0.05 });
       // ground the solid geometry with contact shadows; skip flat backdrops + glowing emitters so the cyan stays clean
       p.group.traverse((o: THREE.Object3D) => {
         const mesh = o as THREE.Mesh; if (!mesh.isMesh) return;
@@ -862,7 +863,7 @@ export default function MeterTwin({ kind = "both", height }: { kind?: Kind; heig
     }
     if (kind === "watt" || kind === "both") { const p = buildWatt(); p.group.position.x = kind === "both" ? -2.0 : 0; scene.add(p.group); parts.push({ ...p, baseRot: 0.3, amp: 0.5 }); }
     if (kind === "water" || kind === "both") { const p = buildWater(); p.group.position.set(kind === "both" ? 2.1 : 0, kind === "both" ? 0.05 : 0, 0); scene.add(p.group); parts.push({ ...p, baseRot: -0.3, amp: 0.5 }); }
-    if (kind === "cabinet") { camera.position.set(2.4, 1.25, 9.9); camera.lookAt(0.2, 0.1, 0); }
+    if (kind === "cabinet") { camera.position.set(4.2, 1.55, 13.2); camera.lookAt(2.5, -0.1, 0); }
     else if (kind === "both") { camera.position.set(0, 1.1, 10.5); camera.lookAt(0, 0, 0); }
     else if (kind === "water") { camera.position.set(2.4, 1.6, 6.8); camera.lookAt(0, 0.2, 0); }
     else { camera.position.set(2.4, 1.0, 6.4); camera.lookAt(0, 0.1, 0); }

@@ -532,8 +532,8 @@ input[type=file] { padding: 8px; font-size: 12.5px; }
 .hero-band .public-brand .logo-img { mix-blend-mode: normal; }
 
 /* ============ 3D digital-twin section ============ */
-.twin-band { background: var(--dark-bg); color: #fff; padding: 76px 0; border-top: 1px solid var(--dark-line); }
-.twin-canvas { width: 100%; height: 520px; margin-top: 10px; }
+.twin-band { background: var(--dark-bg); color: #fff; padding: 0; border-top: 1px solid var(--dark-line); border-bottom: 1px solid var(--dark-line); }
+.twin-canvas { width: 100%; height: 72vh; min-height: 560px; max-height: 820px; margin: 0; }
 .twin-canvas canvas { display: block; }
 @media (max-width: 560px) { .twin-canvas { height: 380px; } }
 
