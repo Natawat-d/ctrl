@@ -46,7 +46,7 @@ export default function Home() {
       </div>
       <section className="twin-band dark-band">
         <div className="landing">
-          <MeterTwin kind="cabinet" />
+          <MeterTwin kind="cabinet" height={640} />
         </div>
       </section>
       <EquipmentShowcase />
