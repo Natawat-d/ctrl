@@ -46,12 +46,7 @@ export default function Home() {
       </div>
       <section className="twin-band dark-band">
         <div className="landing">
-          <div className="equip-head">
-            <span className="tag">3D</span>
-            <h2>มิเตอร์น้ำ-ไฟ ในระบบ CTRL</h2>
-            <p>โมเดล 3 มิติของอุปกรณ์วัดน้ำและไฟที่ใช้จริงในระบบ</p>
-          </div>
-          <MeterTwin kind="both" />
+          <MeterTwin kind="cabinet" />
         </div>
       </section>
       <EquipmentShowcase />
