@@ -65,75 +65,95 @@ export default function BillsPage() {
   const sumTotal = shown.reduce((s, b) => s + (b.total || 0), 0);
   const sumUnpaid = shown.reduce((s, b) => s + ((b.total || 0) - (b.paid_amount || 0)), 0);
 
+  const sumPaid = sumTotal - sumUnpaid;
+  const paidCount = shown.filter((b) => (b.total || 0) - (b.paid_amount || 0) <= 0.005).length;
+  const unpaidOf = (b) => (b.total || 0) - (b.paid_amount || 0);
+
   return (
-    <AppTop title="บิล" sub="ออกบิล ตรวจสลิป และติดตามสถานะ"
-      actions={<div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span className="hint" style={{ maxWidth: 280, textAlign: "right" }}>{genReason}</span>
-        <button className="btn primary" onClick={generate} disabled={busy || !canGenerate} title={genReason}>{busy ? <span className="spin" /> : null} ออกบิลรอบ {cycle}</button>
-      </div>}>
+    <AppTop title="บิล" sub="ออกบิล ตรวจสลิป และติดตามสถานะการชำระ">
       {err && <div className="err">{err}</div>}
       {msg && <div className="ok-msg" style={{ marginBottom: 12 }}>{msg}</div>}
-      {market && !canGenerate && <div className="hint" style={{ marginBottom: 12 }}>ℹ️ {genReason} · กำหนดออกบิลทุกวันที่ {cycleDay} ของเดือน เก็บหน่วยน้ำ-ไฟของเดือนที่เพิ่งจบ + ค่าเช่า (ตั้งค่าได้ในหน้า “ตั้งค่า”)</div>}
 
+      {/* ออกบิลรายเดือน — การ์ดหลัก */}
+      <div className="gen-card">
+        <div className="gen-info">
+          <div className="eyebrow">ออกบิลรายเดือน</div>
+          <div className="gen-cycle">รอบ {cycle}</div>
+          <div className="gen-reason">{genReason}{market ? ` · กำหนดทุกวันที่ ${cycleDay} ของเดือน` : ""}</div>
+        </div>
+        <button className="btn primary gen-btn" onClick={generate} disabled={busy || !canGenerate} title={genReason}>
+          {busy ? <span className="spin" /> : null} ออกบิลรอบ {cycle}
+        </button>
+      </div>
+
+      {/* สรุปยอด */}
+      <div className="bills-kpis">
+        <div className="kpi"><div className="k">บิล{cycleF === "all" ? "ทั้งหมด" : "รอบนี้"}</div><div className="v">{shown.length}<span className="u">ใบ</span></div></div>
+        <div className="kpi"><div className="k">ยอดรวม</div><div className="v">{money(sumTotal)}</div></div>
+        <div className="kpi"><div className="k">ชำระแล้ว</div><div className="v">{money(sumPaid)}<span className="u">· {paidCount} ใบ</span></div></div>
+        <div className={"kpi" + (sumUnpaid > 0.005 ? " danger" : " good")}><div className="k">ค้างชำระ</div><div className="v">{sumUnpaid > 0.005 ? money(sumUnpaid) : "ครบ"}</div></div>
+      </div>
+
+      {/* รอตรวจสลิป */}
       {pays.length > 0 && (
         <>
-          <div className="section-h">รอตรวจสลิป ({pays.length})</div>
-          <div className="card" style={{ overflow: "hidden", marginBottom: 26 }}>
-            <div className="rows">
-              {pays.map((p) => (
-                <div className="row" key={p._id}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                    {p.slip_image_url ? (
-                      <img className="slip-thumb" src={p.slip_image_url} alt="slip" onClick={() => setSlip(p.slip_image_url)} />
-                    ) : (
-                      <div className="slip-thumb" style={{ display: "grid", placeItems: "center", color: "var(--faint)", fontSize: 10 }}>ไม่มีสลิป</div>
-                    )}
-                    <div className="row-main">
-                      <strong>ห้อง {code(p.unit_id)}</strong>
-                      <div className="row-sub">แจ้งชำระ {money(p.amount)}</div>
-                    </div>
+          <div className="section-h">รอตรวจสลิป <span className="sh-count">{pays.length}</span></div>
+          <div className="slip-grid">
+            {pays.map((p) => (
+              <div className="slip-card" key={p._id}>
+                {p.slip_image_url ? (
+                  <img className="sc-thumb" src={p.slip_image_url} alt="slip" onClick={() => setSlip(p.slip_image_url)} />
+                ) : (
+                  <div className="sc-thumb sc-empty">ไม่มีสลิป</div>
+                )}
+                <div className="sc-body">
+                  <div>
+                    <div className="sc-room">ห้อง {code(p.unit_id)}</div>
+                    <div className="sc-amt">{money(p.amount)}</div>
                   </div>
-                  <div className="row-right">
+                  <div className="sc-actions">
                     <button className="btn ghost sm" onClick={() => reject(p._id)}>ปฏิเสธ</button>
-                    <button className="btn good sm" onClick={() => verify(p._id)}>ยืนยันจ่ายแล้ว</button>
+                    <button className="btn primary sm" onClick={() => verify(p._id)}>ยืนยันจ่ายแล้ว</button>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </>
       )}
 
-      <div className="section-h" style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-        <span>ประวัติบิล ({shown.length}{cycleF !== "all" ? `/${bills.length}` : ""} ใบ)</span>
-        <select value={cycleF} onChange={(e) => setCycleF(e.target.value)} style={{ width: "auto", fontSize: 13 }}>
+      {/* ประวัติบิล */}
+      <div className="section-h bills-hist-h">
+        <span>ประวัติบิล <span className="sh-count">{shown.length}{cycleF !== "all" ? `/${bills.length}` : ""}</span></span>
+        <select className="cycle-sel" value={cycleF} onChange={(e) => setCycleF(e.target.value)}>
           <option value="latest">รอบล่าสุด{cycles[0] ? ` (${cycles[0]})` : ""}</option>
           {cycles.map((c) => <option key={c} value={c}>รอบ {c}</option>)}
           <option value="all">ทุกรอบ ({cycles.length} เดือน)</option>
         </select>
-        <span className="hint" style={{ marginLeft: "auto" }}>
-          ยอดรวม {money(sumTotal)}{sumUnpaid > 0.005 ? ` · ค้างชำระ ${money(sumUnpaid)}` : " · ชำระครบ"}
-        </span>
       </div>
       {bills.length === 0 ? (
-        <div className="card empty">ยังไม่มีบิล — กด “ออกบิลเดือนนี้”</div>
+        <div className="card empty">ยังไม่มีบิล — กด “ออกบิลรอบ {cycle}” ด้านบน</div>
       ) : (
         <div className="tbl-wrap">
           <table className="tbl">
             <thead>
-              <tr><th>ห้อง</th><th>รอบ</th><th>ครบกำหนด</th><th className="num">ค่าน้ำ-ไฟ+อื่นๆ</th><th className="num">ยอดรวม</th><th>สถานะ</th></tr>
+              <tr><th>ห้อง</th><th>รอบ</th><th>ครบกำหนด</th><th className="num">ค่าน้ำ-ไฟ+อื่นๆ</th><th className="num">ยอดรวม</th><th className="num">ค้าง</th><th>สถานะ</th></tr>
             </thead>
             <tbody>
-              {shown.map((b) => (
-                <tr key={b._id}>
-                  <td><strong>{code(b.unit_id)}</strong></td>
-                  <td>{b.cycle}</td>
-                  <td>{b.due_at ? new Date(b.due_at).toLocaleDateString("th-TH") : "-"}</td>
-                  <td className="num">{money(b.subtotal)}</td>
-                  <td className="num" style={{ fontWeight: 800 }}>{money(b.total)}</td>
-                  <td><span className={`pill ${b.status}`}>{billStatus(b.status)}</span></td>
-                </tr>
-              ))}
+              {shown.map((b) => {
+                const un = unpaidOf(b);
+                return (
+                  <tr key={b._id}>
+                    <td><strong>{code(b.unit_id)}</strong></td>
+                    <td className="mono-cell">{b.cycle}</td>
+                    <td>{b.due_at ? new Date(b.due_at).toLocaleDateString("th-TH") : "-"}</td>
+                    <td className="num">{money(b.subtotal)}</td>
+                    <td className="num" style={{ fontWeight: 800 }}>{money(b.total)}</td>
+                    <td className="num" style={{ color: un > 0.005 ? "var(--danger-ink)" : "var(--faint)", fontWeight: un > 0.005 ? 700 : 400 }}>{un > 0.005 ? money(un) : "—"}</td>
+                    <td><span className={`pill ${b.status}`}>{billStatus(b.status)}</span></td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
