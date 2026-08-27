@@ -55,3 +55,46 @@ STM32H743VIT6 (WeAct) · KF301-5.0 2P ×16 · Opto 16CH ×2 (NPN 24V→3.3V) · 
 - ถ้า model นับจำนวนไม่เป๊ะ (16/32) — เพิ่มท้าย prompt: *"emphasise the repeating rows and the red/yellow/black colour banding rather than exact counts"*
 - อยากได้แนวไดอะแกรมแทนรูปถ่าย เปลี่ยน "photorealistic photograph" → *"clean technical schematic illustration, flat vector style, labelled"*
 - อยากมองจากมุมบน: เพิ่ม *"slightly top-down three-quarter view"*
+
+---
+
+# 🔌 PROMPT 2 — ตู้ไฟ Schneider (กล่องวัดไฟ Modbus → ต่อ 485 กับกล่อง Main)
+
+> กล่องไฟที่ไฟไหลผ่าน watt meter แล้วออกไปห้อง · มิเตอร์ Schneider DMR121 ×16 (ลูกค้าจัดหา) · ต่อ RS485 Modbus กลับไป "ตู้รวม" (กล่อง main STM32)
+
+## 🎨 MAIN PROMPT (English — paste this)
+
+A photorealistic, brightly-lit front interior view of an **industrial electrical METERING cabinet** with its door open, wall-mounted, large light-grey powder-coated steel enclosure with ventilation slots (GLINK large indoor switchboard). Everything is mounted on horizontal 35 mm aluminium DIN rails inside white plastic cable-duct trunking, neat color-coded wiring, clean professional panel-build, straight-on engineering photograph, high detail, soft even studio lighting.
+
+**MAIN CONTENT — 16 energy meters in two rows:** Sixteen **Schneider single-phase DIN-rail digital energy meters (DMR121 style)** — dark-grey modular bricks, each with a small **LCD digital readout** on the front and screw terminals top and bottom — arranged neatly in **two horizontal rows of eight** on the DIN rails.
+
+**POWER FLOW (top → meters → bottom), the whole purpose of the box:**
+- **Incoming AC main** (thick **6 sq.mm** brown line + blue neutral + green/yellow earth) enters through a large **M25 nylon cable gland** at the **top**, into a row of **incoming power terminal blocks (UK6N, grey, large)**.
+- From the input terminals, **6 sq.mm** wires feed the **LINE-IN** of each of the 16 meters.
+- Each meter's **LINE-OUT** runs down to **per-room output terminal blocks** at the bottom, then out through **M25 cable glands** along the bottom edge — **one 6 sq.mm feed per room** (16 room feeds).
+- **NO circuit breakers** — this is a pure metering pass-through box.
+
+**RS485 MODBUS DAISY-CHAIN (signal):** A thin **2-core shielded cable** links the **RS485 A / B / GND** terminals of all 16 meters in a **daisy-chain**, with a small **120 Ω terminator** at the far end. The chain ends at **ONE panel-mount RS485 connector on the cabinet wall**, clearly **labelled "RS485 → MAIN"**, for connecting this metering box to the main STM32 control cabinet.
+
+**Details to show:** large grey **UK6N** power terminals, **M25** black nylon cable glands, **6 sq.mm** copper wiring bundled in the ducts, numbered **marker strips 1–16** (one per room/meter), metal **end-clamps** on each rail, printed labels on the meters. Realistic copper, screws, LCD faces.
+
+**Style:** clean industrial control-panel photography, realistic steel/plastic/copper, balanced daylight, no people, no text watermark, engineering documentation quality, 3:4 or 4:3 aspect.
+
+## 🇹🇭 โซนในรูป
+| โซน | มีอะไร |
+|---|---|
+| บน | ไฟเมนเข้า (6 sq.mm) ผ่าน cable gland M25 → เทอร์มินอล UK6N ขาเข้า |
+| กลาง | **มิเตอร์ Schneider DMR121 ×16** (2 แถว × 8) · มี LCD หน้าปัด · ไฟเข้า→ผ่านมิเตอร์→ออก |
+| ล่าง | เทอร์มินอลขาออก → cable gland M25 ออกห้อง (6 sq.mm ต่อห้อง ×16) |
+| สัญญาณ | **RS485 Modbus daisy-chain** (A/B/GND, shielded 2C) เชื่อม 16 มิเตอร์ + terminator 120Ω → **1 พอร์ต RS485 → MAIN** บนผนังตู้ |
+| — | **ไม่มีเบรกเกอร์** (วัดไฟผ่านอย่างเดียว) |
+
+## ⚙️ สเปกอ้างอิง (จาก Excel — ชีต "ตู้ไฟ Schneider")
+Schneider DMR121 ×16 (ลูกค้าจัดหา) · ตู้ GLINK เบอร์ใหญ่ · ราง DIN ปีกนก · เทอร์มินอล UK6N (6sq) · cable gland M25 · สายไฟ THW 6 sq.mm · สาย RS485 shielded 2C + terminator 120Ω · end clamp / marker / สะพานสาย
+
+## 🔗 การเชื่อมสองกล่อง
+`ตู้ไฟ Schneider` (16 มิเตอร์ Modbus) --- **RS485 (A/B/GND)** ---> `ตู้รวม` (STM32, พอร์ต RS485) → อ่านค่าไฟทุกห้องเข้าระบบ
+
+## 💡 ทิป
+- อยากได้แนวไดอะแกรม: เปลี่ยน "photorealistic photograph" → *"clean technical schematic illustration, flat vector style, labelled"*
+- เน้นจำนวน: เพิ่มท้าย prompt *"exactly 16 meters in two rows of eight; emphasise the repeating meter rows"*

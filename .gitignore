@@ -18,3 +18,5 @@ Thumbs.db
 .vscode/
 .idea/
 archive/
+backups/
+frontend/tsconfig.tsbuildinfo
