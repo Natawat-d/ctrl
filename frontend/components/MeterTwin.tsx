@@ -863,7 +863,7 @@ export default function MeterTwin({ kind = "both", height }: { kind?: Kind; heig
     }
     if (kind === "watt" || kind === "both") { const p = buildWatt(); p.group.position.x = kind === "both" ? -2.0 : 0; scene.add(p.group); parts.push({ ...p, baseRot: 0.3, amp: 0.5 }); }
     if (kind === "water" || kind === "both") { const p = buildWater(); p.group.position.set(kind === "both" ? 2.1 : 0, kind === "both" ? 0.05 : 0, 0); scene.add(p.group); parts.push({ ...p, baseRot: -0.3, amp: 0.5 }); }
-    if (kind === "cabinet") { camera.position.set(4.2, 1.55, 13.2); camera.lookAt(2.5, -0.1, 0); }
+    if (kind === "cabinet") { camera.position.set(3.0, 1.15, 9.4); camera.lookAt(2.7, -0.05, 0); }
     else if (kind === "both") { camera.position.set(0, 1.1, 10.5); camera.lookAt(0, 0, 0); }
     else if (kind === "water") { camera.position.set(2.4, 1.6, 6.8); camera.lookAt(0, 0.2, 0); }
     else { camera.position.set(2.4, 1.0, 6.4); camera.lookAt(0, 0.1, 0); }
