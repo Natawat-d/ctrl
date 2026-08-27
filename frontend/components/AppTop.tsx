@@ -59,7 +59,7 @@ export default function AppTop({ title, sub, actions, children }: AppTopProps) {
   return (
     <div className="shell">
       <aside className="sidebar">
-        <div className="brand"><img className="logo-img" src="/logo.jpg" alt="CTRL" /></div>
+        <div className="brand"><img className="logo-img" src="/logo.png" alt="CTRL" /></div>
         <div className="side-cap">เมนู</div>
         <nav className="side-nav">
           {nav.map((it) => (

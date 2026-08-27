@@ -22,7 +22,7 @@ export default function ForgotPage() {
   return (
     <div className="auth-wrap">
       <div className="auth-card">
-        <img className="logo-lg-img" src="/logo.jpg" alt="CTRL" />
+        <img className="logo-lg-img" src="/logo.png" alt="CTRL" />
         <h2>ลืมรหัสผ่าน</h2>
         <p className="sub">กรอกอีเมลหรือไอดีเข้าระบบของเจ้าของ ระบบจะส่งลิงก์ตั้งรหัสใหม่ไปที่อีเมล</p>
 

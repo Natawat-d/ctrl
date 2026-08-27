@@ -513,3 +513,20 @@ input[type=file] { padding: 8px; font-size: 12.5px; }
 .hero-band > .bp-layer, .login-hero > .bp-layer { z-index: 0; }
 /* the static ::before backgrounds are superseded by the richer animated inline layer */
 .hero-band::before, .login-hero::before { display: none; }
+
+/* ============ Emphasise the ctrl logo ============ */
+.hero .hero-logo { height: 72px; width: auto; display: block; margin: 0 0 26px; filter: invert(1); mix-blend-mode: screen; }
+.login-hero .lh-logo { height: 62px; width: auto; filter: invert(1); mix-blend-mode: screen; }
+.auth-card .logo-lg-img { height: 42px; width: auto; display: block; margin-bottom: 18px; mix-blend-mode: multiply; }
+.sidebar .brand .logo-img, .sidebar .side-brand .logo-img { height: 27px; filter: invert(1); mix-blend-mode: screen; }
+.public-brand .logo-img { height: 26px; }
+.hero-band .public-brand .logo-img { mix-blend-mode: screen; }
+.nav .brand .logo-img { height: 24px; }
+@media (max-width: 560px) { .hero .hero-logo { height: 52px; } .login-hero .lh-logo { height: 46px; } }
+
+/* logo is now a transparent PNG -> drop blend hacks; invert only on dark surfaces */
+.hero .hero-logo { mix-blend-mode: normal; filter: invert(1); }
+.login-hero .lh-logo { mix-blend-mode: normal; filter: invert(1); }
+.auth-card .logo-lg-img { mix-blend-mode: normal; filter: none; }
+.sidebar .brand .logo-img, .sidebar .side-brand .logo-img { mix-blend-mode: normal; filter: invert(1); }
+.hero-band .public-brand .logo-img { mix-blend-mode: normal; }

@@ -4,7 +4,7 @@ export default function Nav({ children }) {
   return (
     <nav className="nav">
       <Link href="/dashboard" className="brand" style={{ color: "inherit" }}>
-        <img className="logo-img" src="/logo.jpg" alt="CTRL" />
+        <img className="logo-img" src="/logo.png" alt="CTRL" />
       </Link>
       <div className="nav-actions">{children}</div>
     </nav>

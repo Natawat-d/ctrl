@@ -17,13 +17,14 @@ export default function Home() {
         <HeroBlueprint />
         <div className="landing">
           <nav className="public-nav">
-            <div className="public-brand"><img className="logo-img logo-invert" src="/logo.jpg" alt="CTRL" /> <span className="pb-tag">monitoring &amp; billing</span></div>
+            <div className="public-brand"><img className="logo-img logo-invert" src="/logo.png" alt="CTRL" /> <span className="pb-tag">monitoring &amp; billing</span></div>
             <div style={{ display: "flex", gap: 8 }}>
               <Link className="btn ghost on-dark" href="/login">เข้าสู่ระบบ</Link>
               <Link className="btn primary on-dark" href="/signup">สมัครใช้งาน</Link>
             </div>
           </nav>
           <div className="hero">
+            <img className="hero-logo" src="/logo.png" alt="CTRL" />
             <span className="tag">ระบบมิเตอร์น้ำ-ไฟ สำหรับห้องเช่า</span>
             <h1>อ่านมิเตอร์น้ำ-ไฟทุกห้อง<br />ออกบิลรายเดือนอัตโนมัติ</h1>
             <p>สำหรับหอพัก อพาร์ตเมนต์ และคอนโด — เลิกเดินจดมิเตอร์เอง ระบบอ่านค่า รวมค่าเช่า ออกบิล และรับชำระให้จากที่เดียว</p>

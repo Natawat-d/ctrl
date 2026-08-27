@@ -32,7 +32,7 @@ function ResetInner() {
   return (
     <div className="auth-wrap">
       <div className="auth-card">
-        <img className="logo-lg-img" src="/logo.jpg" alt="CTRL" />
+        <img className="logo-lg-img" src="/logo.png" alt="CTRL" />
         <h2>ตั้งรหัสผ่านใหม่</h2>
         <p className="sub">ตั้งรหัสผ่านใหม่สำหรับบัญชีเจ้าของ</p>
 
