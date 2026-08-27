@@ -630,6 +630,12 @@ input[type=file] { padding: 8px; font-size: 12.5px; }
 /* feather the seam so headline block + 3D read as ONE panel */
 .uni-hero-media::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 110px;
   background: linear-gradient(to bottom, var(--dark-bg), transparent); z-index: 2; pointer-events: none; }
+/* ground the rig at the fold: soft floor glow + bottom fade so it sits in space, not clipped */
+.uni-hero-media::after { content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 160px;
+  background:
+    radial-gradient(60% 90px at 50% 100%, rgba(255,255,255,.05), transparent 70%),
+    linear-gradient(to top, var(--dark-bg) 8%, transparent);
+  z-index: 2; pointer-events: none; }
 .uni-hero-media .twin-canvas { height: 68vh; min-height: 500px; max-height: 780px; }
 
 /* ---------- accent + CTA hierarchy ---------- */
@@ -662,8 +668,9 @@ input[type=file] { padding: 8px; font-size: 12.5px; }
 /* all viewBoxes are 240×240 squares → fixed height cap = identical optical weight across all 4 */
 .uni-feature-media img { height: 60%; width: auto; max-width: 78%; object-fit: contain; display: block;
   color: var(--ink); position: relative; z-index: 1; }
-/* copy column: guaranteed baseline rhythm tick→number→heading→body→link */
-.uni-feature-copy { display: flex; flex-direction: column; align-items: flex-start; }
+/* copy column: guaranteed baseline rhythm tick→number→heading→body→link.
+   max-width keeps the copy from floating across the dead gutter on left-media rows. */
+.uni-feature-copy { display: flex; flex-direction: column; align-items: flex-start; max-width: 460px; }
 /* editorial 01–04 index: cyan tick + big mono tabular numeral */
 .uni-feature-n { display: inline-flex; align-items: center; gap: 14px; font-family: var(--font-mono);
   font-size: 26px; font-weight: 700; letter-spacing: .02em; color: var(--ink);
@@ -689,31 +696,47 @@ input[type=file] { padding: 8px; font-size: 12.5px; }
 
 /* ---------- 6. Footer ---------- */
 .uni-footer { background: var(--dark-bg); color: #c7c7cd;
-  border-top: 1px solid rgba(255,255,255,.08); padding: 48px 32px; }
-.uni-footer-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center;
-  justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  border-top: 1px solid rgba(255,255,255,.08); padding: 64px 32px 40px; }
+.uni-footer-top { max-width: 1180px; margin: 0 auto; display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 32px; flex-wrap: wrap; padding-bottom: 32px; }
 .uni-footer-brand { display: flex; flex-direction: column; gap: 12px; max-width: 420px; }
 .uni-footer-brand img { height: 30px; width: auto; }
 .uni-footer-brand p { margin: 0; font-size: 13.5px; line-height: 1.6; color: #b4b4bb; }
+.uni-footer-links { display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: center; }
+.uni-footer-links a { font-size: 14px; font-weight: 600; color: #c7c7cd;
+  transition: color var(--dur) var(--ease); }
+.uni-footer-links a:hover { color: #fff; }
+.uni-footer-bottom { max-width: 1180px; margin: 0 auto; padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,.08); display: flex; justify-content: flex-end; }
 .uni-footer-meta { font-size: 12.5px; color: #b4b4bb; letter-spacing: .02em; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 900px) {
-  .uni-nav-inner { padding: 12px 20px; }
-  .uni-brand-tag { display: none; }
+  .uni-nav-inner { padding: 10px 20px; flex-wrap: nowrap; gap: 10px; }
+  .uni-brand-tag { display: none; }        /* hide tagline only — wordmark stays */
   .uni-nav-link { display: none; }
-  .uni-hero { padding: 64px 20px 0; }
+  .uni-brand { flex-shrink: 0; }           /* brand must never be squeezed out */
+  .uni-brand img { display: block; height: 26px; width: auto; }
+  .uni-nav-links { flex-shrink: 1; min-width: 0; gap: 8px; }
+  .uni-nav-links .btn { min-height: 44px; padding: 10px 14px; }  /* ≥44px tap target */
+  .uni-more { min-height: 44px; padding-bottom: 6px; }
+  .uni-hero { padding: 56px 20px 0; }
   .uni-hero-media .twin-canvas { height: 46vh; min-height: 340px; }
-  .uni-features { padding: 64px 20px 24px; }
+  .uni-features { padding: 56px 20px 24px; }
   .uni-section-head { margin-bottom: 40px; }
   .uni-feature { grid-template-columns: 1fr; gap: 28px; padding: 28px 0; }
+  .uni-feature-copy { max-width: none; }
   /* keep media on top in both directions when stacked */
   .uni-feature.reverse .uni-feature-media { order: 0; }
   .uni-feature.reverse .uni-feature-copy { order: 0; }
   .uni-cta-band { padding: 72px 20px; }
-  .uni-footer { padding: 36px 20px; }
+  .uni-footer { padding: 40px 20px; }
 }
 @media (max-width: 480px) {
+  .uni-nav-inner { padding: 9px 16px; }
+  .uni-brand img { height: 24px; }
+  .uni-nav-links .btn { padding: 10px 12px; font-size: 13px; }
+  .uni-hero-title { margin-top: 10px; }    /* clearance below the eyebrow pill */
   .uni-hero-cta { flex-direction: column; align-items: stretch; }
   .uni-hero-cta .btn { width: 100%; }
 }
