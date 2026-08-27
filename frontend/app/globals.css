@@ -497,3 +497,12 @@ input[type=file] { padding: 8px; font-size: 12.5px; }
 .equip-label { font-size: 13px; color: var(--dark-muted); letter-spacing: .01em; }
 @media (max-width: 900px) { .equip-grid { grid-template-columns: repeat(3, 1fr); } .equip-head h2 { font-size: 28px; } }
 @media (max-width: 560px) { .equip-grid { grid-template-columns: repeat(2, 1fr); } .equip-band { padding: 56px 0; } }
+
+/* ============ Decorative SVG backgrounds on dark hero panels ============ */
+.hero-band { position: relative; overflow: hidden; }
+.hero-band::before { content: ""; position: absolute; inset: 0; background: url("/illus/hero-bg.svg") center right / cover no-repeat; pointer-events: none; z-index: 0; }
+.hero-band > * { position: relative; z-index: 1; }
+
+.login-hero { position: relative; overflow: hidden; }
+.login-hero::before { content: ""; position: absolute; inset: 0; background: url("/illus/login-bg.svg") center / cover no-repeat; pointer-events: none; z-index: 0; }
+.login-hero > * { position: relative; z-index: 1; }
