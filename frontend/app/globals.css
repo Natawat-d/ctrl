@@ -487,15 +487,18 @@ input[type=file] { padding: 8px; font-size: 12.5px; }
 .equip-band { background: var(--dark-bg); color: #fff; padding: 76px 0; }
 .equip-head { max-width: 640px; margin: 0 0 44px; }
 .equip-head .tag { display: inline-block; }
-.equip-head h2 { font-family: var(--font-display); font-size: 34px; font-weight: 700; letter-spacing: -.01em; line-height: 1.2; margin: 14px 0 10px; color: #fff; }
+.equip-head h2 { font-family: var(--font-display); font-size: clamp(30px, 4vw, 46px); font-weight: 700; letter-spacing: -.02em; line-height: 1.14; margin: 16px 0 12px; color: #fff; }
 .equip-head p { color: var(--dark-muted); font-size: 16px; line-height: 1.6; margin: 0; }
-.equip-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
-.equip-item { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 26px 16px; border: 1px solid var(--dark-line); border-radius: 4px; transition: border-color .2s ease, transform .2s ease, background .2s ease; }
+.equip-grid { display: grid; grid-template-columns: repeat(5, 1fr); row-gap: 16px; column-gap: 16px; }
+.equip-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 16px; padding: 24px 12px 18px; border: 1px solid var(--dark-line); border-radius: 4px; transition: border-color .2s ease, transform .2s ease, background .2s ease; }
 .equip-item:hover { border-color: rgba(255,255,255,.34); transform: translateY(-3px); background: rgba(255,255,255,.02); }
-.equip-svg { width: 92px; height: 92px; color: #fff; }
+.equip-svg { width: 112px; height: 112px; color: #fff; display: grid; place-items: center; }
 .equip-svg svg { width: 100%; height: 100%; display: block; }
-.equip-label { font-size: 13px; color: var(--dark-muted); letter-spacing: .01em; }
-@media (max-width: 900px) { .equip-grid { grid-template-columns: repeat(3, 1fr); } .equip-head h2 { font-size: 28px; } }
+/* optical evening: LAN module + cable coil render lighter/smaller in their viewBox — nudge up */
+.equip-item:nth-child(7) .equip-svg,
+.equip-item:nth-child(10) .equip-svg { transform: scale(1.08); }
+.equip-label { font-size: 13.5px; color: var(--dark-muted); letter-spacing: .01em; }
+@media (max-width: 900px) { .equip-grid { grid-template-columns: repeat(3, 1fr); } .equip-head h2 { font-size: 28px; } .equip-svg { width: 104px; height: 104px; } }
 @media (max-width: 560px) { .equip-grid { grid-template-columns: repeat(2, 1fr); } .equip-band { padding: 56px 0; } }
 
 /* ============ Decorative SVG backgrounds on dark hero panels ============ */
@@ -576,3 +579,141 @@ input[type=file] { padding: 8px; font-size: 12.5px; }
 .bills-hist-h { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .cycle-sel { width: auto; font-size: 13px; padding: 6px 10px; }
 .mono-cell { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+
+/* =====================================================================
+   UNITREE-STYLE LANDING (uni-*)  — new, self-contained landing system.
+   Dark hero + 3D showpiece → light alternating feature blocks →
+   dark equipment grid (EquipmentShowcase) → dark CTA → footer.
+   Old landing classes (.hero/.steps/.step) are left intact for other use.
+   ===================================================================== */
+.uni-page { background: var(--bg); color: var(--body); }
+.uni-wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+/* ---------- 1. Sticky top nav ---------- */
+.uni-nav { position: sticky; top: 0; z-index: 50; background: rgba(10,10,10,.72);
+  backdrop-filter: saturate(140%) blur(12px); -webkit-backdrop-filter: saturate(140%) blur(12px);
+  border-bottom: 1px solid var(--dark-line); }
+.uni-nav-inner { max-width: 1240px; margin: 0 auto; padding: 14px 32px; display: flex;
+  align-items: center; justify-content: space-between; gap: 20px; }
+.uni-brand { display: inline-flex; align-items: center; gap: 14px; }
+.uni-brand img { height: 30px; width: auto; display: block; }
+.uni-brand-tag { font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase;
+  font-weight: 600; color: var(--dark-muted); padding-left: 14px;
+  border-left: 1px solid var(--dark-line); }
+.uni-nav-links { display: flex; align-items: center; gap: 8px; }
+.uni-nav-link { color: var(--dark-muted); font-size: 14px; font-weight: 600; padding: 8px 12px;
+  border-radius: 3px; transition: color var(--dur) var(--ease); }
+.uni-nav-link:hover { color: #fff; }
+
+/* ---------- 2. Full-bleed hero ---------- */
+.uni-hero { position: relative; background: var(--dark-bg); color: var(--dark-ink);
+  border-bottom: 1px solid var(--dark-line); padding: 52px 32px 0; overflow: hidden; }
+.uni-hero-copy { max-width: 920px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
+/* eyebrow / section kicker — base = LIGHT surfaces (high contrast, editorial) */
+.uni-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .2em; color: var(--ink);
+  border: 1px solid var(--line-2); border-radius: 2px; padding: 7px 14px; margin-bottom: 22px; }
+.uni-eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #22d3ee; flex-shrink: 0; }
+/* dark override for the hero */
+.uni-hero .uni-eyebrow { color: #f4f4f5; border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.03); }
+.uni-hero-title { font-family: var(--font-display); color: #fff; font-weight: 700;
+  font-size: clamp(44px, 7.6vw, 90px); line-height: 1.15; letter-spacing: -.015em;
+  margin: 0 0 22px; padding-top: .16em; }
+.uni-hero-sub { color: #c7c7cd; font-size: clamp(16px, 1.6vw, 19px); line-height: 1.65;
+  max-width: 60ch; margin: 0 auto 30px; }
+.uni-hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+/* lock both hero/CTA buttons to one vertical + x-padding system */
+.uni-hero-cta .btn { min-height: 48px; padding: 0 24px; font-size: 15px; }
+.uni-hero-media { position: relative; z-index: 1; margin-top: 8px;
+  /* let the 3D scene bleed to the edges of the dark band */
+  margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
+/* feather the seam so headline block + 3D read as ONE panel */
+.uni-hero-media::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 110px;
+  background: linear-gradient(to bottom, var(--dark-bg), transparent); z-index: 2; pointer-events: none; }
+.uni-hero-media .twin-canvas { height: 68vh; min-height: 500px; max-height: 780px; }
+
+/* ---------- accent + CTA hierarchy ---------- */
+.uni-arrow { color: #22d3ee; font-weight: 700; margin-left: 2px; }
+.uni-cta-primary { transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease),
+  box-shadow var(--dur) var(--ease); }
+.uni-cta-primary:hover { box-shadow: 0 0 0 1px #22d3ee, 0 0 22px -6px rgba(34,211,238,.7); }
+.uni-cta-primary .uni-arrow { color: #0891b2; }
+
+/* ---------- 3. Alternating feature blocks ---------- */
+.uni-features { max-width: 1180px; margin: 0 auto; padding: 72px 32px 56px; }
+.uni-section-head { max-width: 760px; margin: 0 0 40px; }
+.uni-section-title { font-family: var(--font-display); font-size: clamp(32px, 4.8vw, 54px);
+  font-weight: 700; letter-spacing: -.02em; line-height: 1.12; margin: 16px 0 0; color: var(--ink); }
+.uni-feature { display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+  gap: clamp(48px, 6vw, 96px); padding-block: 88px; }
+.uni-feature + .uni-feature { border-top: 1px solid var(--line); }
+.uni-feature.reverse .uni-feature-media { order: 2; }
+.uni-feature.reverse .uni-feature-copy { order: 1; }
+/* shared 4:3 frame so all four rows share one rhythm */
+.uni-feature-media { aspect-ratio: 4 / 3; display: grid; place-items: center;
+  background:
+    radial-gradient(120% 120% at 20% 0%, rgba(34,211,238,.05), transparent 46%),
+    linear-gradient(158deg, #fcfcfd, #eef0f2);
+  border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  transition: border-color var(--dur) var(--ease); }
+.uni-feature-media::after { content: ""; position: absolute; inset: 14px; border: 1px solid var(--line);
+  border-radius: 6px; pointer-events: none; opacity: .6; }
+.uni-feature-media { position: relative; }
+/* all viewBoxes are 240×240 squares → fixed height cap = identical optical weight across all 4 */
+.uni-feature-media img { height: 60%; width: auto; max-width: 78%; object-fit: contain; display: block;
+  color: var(--ink); position: relative; z-index: 1; }
+/* copy column: guaranteed baseline rhythm tick→number→heading→body→link */
+.uni-feature-copy { display: flex; flex-direction: column; align-items: flex-start; }
+/* editorial 01–04 index: cyan tick + big mono tabular numeral */
+.uni-feature-n { display: inline-flex; align-items: center; gap: 14px; font-family: var(--font-mono);
+  font-size: 26px; font-weight: 700; letter-spacing: .02em; color: var(--ink);
+  font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 4px; }
+.uni-feature-n::before { content: ""; width: 34px; height: 2px; background: #22d3ee; flex-shrink: 0; }
+.uni-feature-title { font-family: var(--font-display); font-size: clamp(26px, 3vw, 38px);
+  font-weight: 700; letter-spacing: -.02em; line-height: 1.18; margin: 16px 0 14px; color: var(--ink); }
+.uni-feature-desc { color: var(--muted); font-size: 16.5px; line-height: 1.7; max-width: 46ch; margin: 0 0 28px; }
+.uni-more { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; font-size: 15px;
+  color: var(--ink); border-bottom: 1px solid var(--line-2); padding-bottom: 3px;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.uni-more:hover { color: #0891b2; border-color: #22d3ee; }
+.uni-more:hover .uni-arrow { color: #0891b2; }
+
+/* ---------- 5. Closing CTA band ---------- */
+/* tonal step up (#141416) + hairline so it separates from the equipment band above */
+.uni-cta-band { background: var(--dark-surface); color: #fff; text-align: center;
+  padding: 100px 32px; border-top: 1px solid rgba(255,255,255,.08); }
+.uni-cta-title { font-family: var(--font-display); font-size: clamp(28px, 4.5vw, 48px);
+  font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 14px; color: #fff; }
+.uni-cta-sub { color: var(--dark-muted); font-size: 17px; line-height: 1.6; max-width: 54ch;
+  margin: 0 auto 30px; }
+
+/* ---------- 6. Footer ---------- */
+.uni-footer { background: var(--dark-bg); color: #c7c7cd;
+  border-top: 1px solid rgba(255,255,255,.08); padding: 48px 32px; }
+.uni-footer-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center;
+  justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.uni-footer-brand { display: flex; flex-direction: column; gap: 12px; max-width: 420px; }
+.uni-footer-brand img { height: 30px; width: auto; }
+.uni-footer-brand p { margin: 0; font-size: 13.5px; line-height: 1.6; color: #b4b4bb; }
+.uni-footer-meta { font-size: 12.5px; color: #b4b4bb; letter-spacing: .02em; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .uni-nav-inner { padding: 12px 20px; }
+  .uni-brand-tag { display: none; }
+  .uni-nav-link { display: none; }
+  .uni-hero { padding: 64px 20px 0; }
+  .uni-hero-media .twin-canvas { height: 46vh; min-height: 340px; }
+  .uni-features { padding: 64px 20px 24px; }
+  .uni-section-head { margin-bottom: 40px; }
+  .uni-feature { grid-template-columns: 1fr; gap: 28px; padding: 28px 0; }
+  /* keep media on top in both directions when stacked */
+  .uni-feature.reverse .uni-feature-media { order: 0; }
+  .uni-feature.reverse .uni-feature-copy { order: 0; }
+  .uni-cta-band { padding: 72px 20px; }
+  .uni-footer { padding: 36px 20px; }
+}
+@media (max-width: 480px) {
+  .uni-hero-cta { flex-direction: column; align-items: stretch; }
+  .uni-hero-cta .btn { width: 100%; }
+}
