@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- ===== threaded sensor stem below the gauge ===== -->
+    <g>
+      <!-- neck connecting dial to collar -->
+      <path d="M110 172 L110 177 M130 172 L130 177" stroke-width="2.5"/>
+
+      <!-- hex-nut collar (wrench fitting) -->
+      <path d="M108 177 L132 177 L144 188 L132 199 L108 199 L96 188 Z" fill="currentColor" opacity="0.06" stroke="none"/>
+      <path d="M108 177 L132 177 L144 188 L132 199 L108 199 L96 188 Z" stroke-width="2.5"/>
+
+      <!-- threaded probe body -->
+      <path d="M107 199 L107 216 Q107 222 113 224 L127 224 Q133 222 133 216 L133 199 Z" fill="currentColor" opacity="0.06" stroke="none"/>
+      <path d="M107 199 L107 216 Q107 222 113 224 L127 224 Q133 222 133 216 L133 199" stroke-width="4"/>
+
+      <!-- thread grooves -->
+      <g stroke-width="1.5" opacity="0.7">
+        <path d="M108 205 L132 205"/>
+        <path d="M108 211 L132 211"/>
+        <path d="M109 217 L131 217"/>
+      </g>
+    </g>
+
+    <!-- ===== outer bezel ===== -->
+    <circle cx="120" cy="98" r="74" fill="currentColor" opacity="0.06" stroke="none"/>
+    <circle cx="120" cy="98" r="74" stroke-width="4"/>
+    <circle cx="120" cy="98" r="64" stroke-width="2.5"/>
+
+    <!-- bezel screws at 45deg positions -->
+    <g stroke-width="1.5">
+      <circle cx="168.8" cy="49.2" r="4.2" fill="currentColor" opacity="0.06" stroke="none"/>
+      <circle cx="168.8" cy="49.2" r="4.2"/>
+      <path d="M165.8 49.2 L171.8 49.2"/>
+      <circle cx="71.2" cy="49.2" r="4.2" fill="currentColor" opacity="0.06" stroke="none"/>
+      <circle cx="71.2" cy="49.2" r="4.2"/>
+      <path d="M68.2 49.2 L74.2 49.2"/>
+      <circle cx="71.2" cy="146.8" r="4.2" fill="currentColor" opacity="0.06" stroke="none"/>
+      <circle cx="71.2" cy="146.8" r="4.2"/>
+      <path d="M68.2 146.8 L74.2 146.8"/>
+      <circle cx="168.8" cy="146.8" r="4.2" fill="currentColor" opacity="0.06" stroke="none"/>
+      <circle cx="168.8" cy="146.8" r="4.2"/>
+      <path d="M165.8 146.8 L171.8 146.8"/>
+    </g>
+
+    <!-- dial face inner ring -->
+    <circle cx="120" cy="98" r="52" stroke-width="1.5" opacity="0.5"/>
+
+    <!-- major ticks (30deg apart, 240deg sweep, gap at bottom) -->
+    <g stroke-width="2.5">
+      <path d="M68.0 128.0 L75.8 123.5"/>
+      <path d="M60.0 98.0 L69.0 98.0"/>
+      <path d="M68.0 68.0 L75.8 72.5"/>
+      <path d="M90.0 46.0 L94.5 53.8"/>
+      <path d="M120 38 L120 47"/>
+      <path d="M150.0 46.0 L145.5 53.8"/>
+      <path d="M172.0 68.0 L164.2 72.5"/>
+      <path d="M180.0 98.0 L171.0 98.0"/>
+      <path d="M172.0 128.0 L164.2 123.5"/>
+    </g>
+
+    <!-- minor ticks (15deg apart) -->
+    <g stroke-width="1.5" opacity="0.7">
+      <path d="M62.0 113.5 L67.8 112.0"/>
+      <path d="M62.0 82.5 L67.8 84.0"/>
+      <path d="M77.6 55.6 L81.8 59.8"/>
+      <path d="M104.5 40.0 L106.0 45.8"/>
+      <path d="M135.5 40.0 L134.0 45.8"/>
+      <path d="M162.4 55.6 L158.2 59.8"/>
+      <path d="M178.0 82.5 L172.2 84.0"/>
+      <path d="M178.0 113.5 L172.2 112.0"/>
+    </g>
+
+    <!-- needle: tapered pointer with counterweight -->
+    <path d="M142 60 L123 100 L112 111 L117 96 Z" fill="currentColor" opacity="0.12" stroke="none"/>
+    <path d="M142 60 L123 100 L112 111 L117 96 Z" stroke-width="2.5"/>
+
+    <!-- hub -->
+    <circle cx="120" cy="98" r="7" fill="currentColor" opacity="0.06" stroke="none"/>
+    <circle cx="120" cy="98" r="7" stroke-width="2.5"/>
+    <circle cx="120" cy="98" r="2" fill="currentColor" opacity="0.9" stroke="none"/>
+
+  </g>
+</svg>

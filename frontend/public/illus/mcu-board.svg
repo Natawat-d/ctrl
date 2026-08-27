@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <!-- ===== PCB board ===== -->
+  <rect x="36" y="48" width="168" height="152" rx="10" fill="currentColor" opacity="0.06"/>
+  <rect x="36" y="48" width="168" height="152" rx="10" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+  <!-- inner silkscreen border -->
+  <rect x="46" y="58" width="148" height="132" rx="6" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- ===== mounting holes (corners) ===== -->
+  <g stroke="currentColor" stroke-width="2.5">
+    <circle cx="58" cy="72" r="6"/>
+    <circle cx="182" cy="72" r="6"/>
+    <circle cx="58" cy="176" r="6"/>
+    <circle cx="182" cy="176" r="6"/>
+  </g>
+  <g fill="currentColor" opacity="0.9">
+    <circle cx="58" cy="72" r="1.6"/>
+    <circle cx="182" cy="72" r="1.6"/>
+    <circle cx="58" cy="176" r="1.6"/>
+    <circle cx="182" cy="176" r="1.6"/>
+  </g>
+
+  <!-- ===== micro-USB / SD shield (top edge) ===== -->
+  <rect x="104" y="38" width="32" height="22" rx="3" fill="currentColor" opacity="0.06"/>
+  <rect x="104" y="38" width="32" height="22" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+  <line x1="112" y1="38" x2="112" y2="45" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+  <line x1="128" y1="38" x2="128" y2="45" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+  <line x1="104" y1="53" x2="136" y2="53" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- ===== central QFP chip ===== -->
+  <!-- pins: four sides, even pitch -->
+  <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.85">
+    <!-- top -->
+    <line x1="105" y1="96" x2="105" y2="90"/>
+    <line x1="111" y1="96" x2="111" y2="90"/>
+    <line x1="117" y1="96" x2="117" y2="90"/>
+    <line x1="123" y1="96" x2="123" y2="90"/>
+    <line x1="129" y1="96" x2="129" y2="90"/>
+    <line x1="135" y1="96" x2="135" y2="90"/>
+    <!-- bottom -->
+    <line x1="105" y1="140" x2="105" y2="146"/>
+    <line x1="111" y1="140" x2="111" y2="146"/>
+    <line x1="117" y1="140" x2="117" y2="146"/>
+    <line x1="123" y1="140" x2="123" y2="146"/>
+    <line x1="129" y1="140" x2="129" y2="146"/>
+    <line x1="135" y1="140" x2="135" y2="146"/>
+    <!-- left -->
+    <line x1="98" y1="103" x2="92" y2="103"/>
+    <line x1="98" y1="109" x2="92" y2="109"/>
+    <line x1="98" y1="115" x2="92" y2="115"/>
+    <line x1="98" y1="121" x2="92" y2="121"/>
+    <line x1="98" y1="127" x2="92" y2="127"/>
+    <line x1="98" y1="133" x2="92" y2="133"/>
+    <!-- right -->
+    <line x1="142" y1="103" x2="148" y2="103"/>
+    <line x1="142" y1="109" x2="148" y2="109"/>
+    <line x1="142" y1="115" x2="148" y2="115"/>
+    <line x1="142" y1="121" x2="148" y2="121"/>
+    <line x1="142" y1="127" x2="148" y2="127"/>
+    <line x1="142" y1="133" x2="148" y2="133"/>
+  </g>
+  <!-- chip body -->
+  <rect x="98" y="96" width="44" height="44" rx="5" fill="currentColor" opacity="0.06"/>
+  <rect x="98" y="96" width="44" height="44" rx="5" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+  <rect x="108" y="106" width="24" height="24" rx="3" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+  <!-- pin-1 marker -->
+  <circle cx="106" cy="104" r="2.4" fill="currentColor" opacity="0.9"/>
+
+  <!-- ===== header pin strip (bottom edge, nested between mounts) ===== -->
+  <rect x="70" y="166" width="100" height="14" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+  <g stroke="currentColor" stroke-width="2">
+    <circle cx="78" cy="173" r="2.8"/>
+    <circle cx="90" cy="173" r="2.8"/>
+    <circle cx="102" cy="173" r="2.8"/>
+    <circle cx="114" cy="173" r="2.8"/>
+    <circle cx="126" cy="173" r="2.8"/>
+    <circle cx="138" cy="173" r="2.8"/>
+    <circle cx="150" cy="173" r="2.8"/>
+    <circle cx="162" cy="173" r="2.8"/>
+  </g>
+
+  <!-- ===== small components ===== -->
+  <!-- crystal oscillator (left of chip) -->
+  <rect x="56" y="110" width="26" height="13" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+  <line x1="64.7" y1="110" x2="64.7" y2="123" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+  <line x1="73.3" y1="110" x2="73.3" y2="123" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+  <!-- SMD resistor (right of chip) -->
+  <rect x="158" y="107" width="14" height="8" rx="2" fill="currentColor" opacity="0.12"/>
+  <rect x="158" y="107" width="14" height="8" rx="2" stroke="currentColor" stroke-width="2"/>
+  <!-- SMD capacitor -->
+  <rect x="158" y="121" width="14" height="8" rx="2" fill="currentColor" opacity="0.12"/>
+  <rect x="158" y="121" width="14" height="8" rx="2" stroke="currentColor" stroke-width="2"/>
+  <!-- status LEDs -->
+  <circle cx="70" cy="150" r="2.6" fill="currentColor" opacity="0.9"/>
+  <circle cx="80" cy="150" r="2.6" stroke="currentColor" stroke-width="2"/>
+
+  <!-- ===== trace hints ===== -->
+  <g stroke="currentColor" stroke-width="1.5" opacity="0.35" stroke-linecap="round">
+    <path d="M114 146 L114 166"/>
+    <path d="M126 146 L126 166"/>
+    <path d="M148 111 L156 111"/>
+    <path d="M82 116 L92 115"/>
+  </g>
+</svg>

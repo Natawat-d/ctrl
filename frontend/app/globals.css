@@ -482,3 +482,18 @@ input[type=file] { padding: 8px; font-size: 12.5px; }
 .nav .brand .dot { width: 8px; height: 8px; border-radius: 50%; }
 .nav .brand .dot::before { display: none; }
 .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+/* ============ Equipment showcase (decorative electrical line-art) ============ */
+.equip-band { background: var(--dark-bg); color: #fff; padding: 76px 0; }
+.equip-head { max-width: 640px; margin: 0 0 44px; }
+.equip-head .tag { display: inline-block; }
+.equip-head h2 { font-family: var(--font-display); font-size: 34px; font-weight: 700; letter-spacing: -.01em; line-height: 1.2; margin: 14px 0 10px; color: #fff; }
+.equip-head p { color: var(--dark-muted); font-size: 16px; line-height: 1.6; margin: 0; }
+.equip-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.equip-item { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 26px 16px; border: 1px solid var(--dark-line); border-radius: 4px; transition: border-color .2s ease, transform .2s ease, background .2s ease; }
+.equip-item:hover { border-color: rgba(255,255,255,.34); transform: translateY(-3px); background: rgba(255,255,255,.02); }
+.equip-svg { width: 92px; height: 92px; color: #fff; }
+.equip-svg svg { width: 100%; height: 100%; display: block; }
+.equip-label { font-size: 13px; color: var(--dark-muted); letter-spacing: .01em; }
+@media (max-width: 900px) { .equip-grid { grid-template-columns: repeat(3, 1fr); } .equip-head h2 { font-size: 28px; } }
+@media (max-width: 560px) { .equip-grid { grid-template-columns: repeat(2, 1fr); } .equip-band { padding: 56px 0; } }

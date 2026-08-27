@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+  <!-- ===== PCB base board ===== -->
+  <rect x="26" y="142" width="188" height="56" rx="9" fill="currentColor" opacity="0.06"/>
+  <rect x="26" y="142" width="188" height="56" rx="9" stroke-width="2.5"/>
+  <!-- mounting holes -->
+  <circle cx="38" cy="154" r="2.6" stroke-width="1.5"/>
+  <circle cx="202" cy="154" r="2.6" stroke-width="1.5"/>
+  <circle cx="38" cy="186" r="2.6" stroke-width="1.5"/>
+  <circle cx="202" cy="186" r="2.6" stroke-width="1.5"/>
+  <!-- board bus traces + vias -->
+  <path d="M54 179 H186" stroke-width="1.5" opacity="0.7"/>
+  <path d="M54 188 H186" stroke-width="1.5" opacity="0.7"/>
+  <circle cx="70" cy="179" r="1.4" fill="currentColor" opacity="0.9"/>
+  <circle cx="120" cy="188" r="1.4" fill="currentColor" opacity="0.9"/>
+  <circle cx="170" cy="179" r="1.4" fill="currentColor" opacity="0.9"/>
+
+  <!-- ===== signal path: jack -> magnetics -> chip ===== -->
+  <g stroke-width="1.5" opacity="0.75">
+    <path d="M100 116 H112"/>
+    <path d="M100 124 H112"/>
+    <path d="M100 132 H112"/>
+    <path d="M146 110 H152"/>
+    <path d="M146 120 H152"/>
+    <path d="M146 130 H152"/>
+  </g>
+
+  <!-- ===== RJ45 JACK ===== -->
+  <!-- body -->
+  <rect x="40" y="48" width="60" height="94" rx="6" fill="currentColor" opacity="0.06"/>
+  <rect x="40" y="48" width="60" height="94" rx="6" stroke-width="4"/>
+  <!-- shield seam lines -->
+  <path d="M40 62 H100" stroke-width="1.5" opacity="0.6"/>
+  <path d="M40 142 H100" stroke-width="1.5" opacity="0.6"/>
+  <!-- keyed opening with clip channel (the little clip) -->
+  <path d="M48 110 V66 H62 V57 H78 V66 H92 V110 Z" fill="currentColor" opacity="0.06"/>
+  <path d="M48 110 V66 H62 V57 H78 V66 H92 V110 Z" stroke-width="2.5"/>
+  <!-- 8 gold contact lines (evenly spaced) -->
+  <g stroke-width="1.5" opacity="0.85">
+    <path d="M52 67 V84"/>
+    <path d="M57 67 V84"/>
+    <path d="M62 67 V84"/>
+    <path d="M67 67 V84"/>
+    <path d="M73 67 V84"/>
+    <path d="M78 67 V84"/>
+    <path d="M83 67 V84"/>
+    <path d="M88 67 V84"/>
+  </g>
+  <!-- two link LEDs -->
+  <circle cx="55" cy="127" r="4" stroke-width="1.5"/>
+  <circle cx="55" cy="127" r="4" fill="currentColor" opacity="0.9"/>
+  <circle cx="85" cy="127" r="4" stroke-width="1.5"/>
+  <circle cx="85" cy="127" r="4" fill="currentColor" opacity="0.12"/>
+  <!-- shield ground tabs into board -->
+  <path d="M52 142 V150" stroke-width="2.5"/>
+  <path d="M88 142 V150" stroke-width="2.5"/>
+
+  <!-- ===== short magnetics block ===== -->
+  <rect x="112" y="104" width="34" height="38" rx="4" fill="currentColor" opacity="0.06"/>
+  <rect x="112" y="104" width="34" height="38" rx="4" stroke-width="4"/>
+  <!-- transformer windings -->
+  <g stroke-width="1.5" opacity="0.75">
+    <path d="M120 112 V134"/>
+    <path d="M126 112 V134"/>
+    <path d="M132 112 V134"/>
+    <path d="M138 112 V134"/>
+  </g>
+  <!-- pin-1 dot -->
+  <circle cx="117" cy="110" r="1.5" fill="currentColor" opacity="0.9"/>
+
+  <!-- ===== network chip (square IC) ===== -->
+  <!-- side pins -->
+  <g stroke-width="2.5">
+    <path d="M152 108 H158"/>
+    <path d="M152 118 H158"/>
+    <path d="M152 128 H158"/>
+    <path d="M152 138 H158"/>
+    <path d="M204 108 H210"/>
+    <path d="M204 118 H210"/>
+    <path d="M204 128 H210"/>
+    <path d="M204 138 H210"/>
+  </g>
+  <rect x="158" y="98" width="46" height="46" rx="5" fill="currentColor" opacity="0.06"/>
+  <rect x="158" y="98" width="46" height="46" rx="5" stroke-width="4"/>
+  <!-- die outline -->
+  <rect x="169" y="109" width="24" height="24" rx="3" fill="currentColor" opacity="0.06"/>
+  <rect x="169" y="109" width="24" height="24" rx="3" stroke-width="1.5" opacity="0.7"/>
+  <!-- pin-1 dimple -->
+  <circle cx="165" cy="105" r="2" fill="currentColor" opacity="0.9"/>
+</svg>

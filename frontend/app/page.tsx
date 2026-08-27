@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Icon from "@/components/Icon";
+import EquipmentShowcase from "@/components/EquipmentShowcase";
 
 const steps = [
   { icon: "grid", t: "ติดตั้งมิเตอร์ต่อห้อง", d: "แต่ละห้องมีมิเตอร์ไฟและมิเตอร์น้ำ ส่งค่าเข้าระบบเอง" },
@@ -39,6 +40,7 @@ export default function Home() {
           ))}
         </div>
       </div>
+      <EquipmentShowcase />
     </div>
   );
 }
