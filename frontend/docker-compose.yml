@@ -1,0 +1,21 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes: [ mongo_data:/data/db ]
+  # แอปเดียวที่เสิร์ฟ https://ctrlanywhere.com (Caddy → 127.0.0.1:3212)
+  # เดิมมี service `app` เสิร์ฟ basePath /CTRL_MOCK ที่ :3210 คู่กันโดยใช้ DB เดียวกัน
+  # ถอดออกแล้ว 2026-08-13 — ไม่มี route ใน Caddy และเป็นประตูที่สองเข้าฐานข้อมูล production
+  app_root:
+    build:
+      context: .
+      args: { NEXT_PUBLIC_BASE_PATH: "" }
+    image: ctrl-root-app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - NEXT_PUBLIC_BASE_PATH=
+      - PUBLIC_BASE_URL=https://ctrlanywhere.com
+    ports: [ "127.0.0.1:3212:3000" ]
+    depends_on: [ mongo ]
+volumes: { mongo_data: {} }

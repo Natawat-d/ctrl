@@ -1,0 +1,15 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes: [ mongo_data:/data/db ]
+  app:
+    build:
+      context: .
+      args: { NEXT_PUBLIC_BASE_PATH: "/CTRL_MOCK" }
+    image: ctrl-mock-app
+    restart: unless-stopped
+    env_file: .env
+    ports: [ "127.0.0.1:3210:3000" ]
+    depends_on: [ mongo ]
+volumes: { mongo_data: {} }
