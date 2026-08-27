@@ -864,9 +864,9 @@ export default function MeterTwin({ kind = "both", height }: { kind?: Kind; heig
     const mount = mountRef.current; if (!mount) return;
     let w = mount.clientWidth || 800, h = mount.clientHeight || 480;
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); renderer.setSize(w, h);
     const cab = kind === "cabinet";
-    if (cab) { renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; }
+    // cabinet: no real-time shadow map (heaviest per-frame cost) + lower pixel ratio; a baked contact-shadow plane grounds it instead
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, cab ? 1.5 : 2)); renderer.setSize(w, h);
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = cab ? 0.82 : 0.9; renderer.outputColorSpace = THREE.SRGBColorSpace;
     mount.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
@@ -874,32 +874,18 @@ export default function MeterTwin({ kind = "both", height }: { kind?: Kind; heig
     if (cab) scene.fog = new THREE.Fog(0x0a0a0a, 16, 34);
     const camera = new THREE.PerspectiveCamera(34, w / h, 0.1, 100);
     const pmrem = new THREE.PMREMGenerator(renderer); const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environment = envTex;
-    // single strong raking key pushed further camera-left/high so the far side of the cabinet gradients into shadow
-    const keyL = new THREE.DirectionalLight(0xffffff, cab ? 1.4 : 1.15); keyL.position.set(cab ? -7 : -5, cab ? 8 : 7, 5); scene.add(keyL);
-    if (cab) {
-      keyL.castShadow = true; keyL.shadow.mapSize.set(1024, 1024);
-      keyL.shadow.bias = -0.0004; keyL.shadow.normalBias = 0.04;
-      const sc = keyL.shadow.camera; sc.left = -6; sc.right = 6; sc.top = 6; sc.bottom = -6; sc.near = 0.5; sc.far = 40; sc.updateProjectionMatrix();
-    }
-    // cabinet: lean 3-light rig (key + cool rim + ambient) — the PMREM RoomEnvironment carries the fill, so the extra dim fills were dropped to cut per-fragment cost
-    const rimL = new THREE.DirectionalLight(cab ? 0x8fd6e6 : 0x88aaff, cab ? 0.7 : 1.1); rimL.position.set(6, 2, -5); scene.add(rimL);
+    // cabinet: minimal rig — ONE key light + ambient, with the PMREM RoomEnvironment (IBL) carrying every reflection/fill. No shadow pass, no rim/fill lights, so per-fragment lighting cost is as low as it goes.
+    const keyL = new THREE.DirectionalLight(0xffffff, cab ? 1.55 : 1.15); keyL.position.set(cab ? -7 : -5, cab ? 8 : 7, 5); scene.add(keyL);
     if (!cab) {
+      const rimL = new THREE.DirectionalLight(0x88aaff, 1.1); rimL.position.set(6, 2, -5); scene.add(rimL);
       const warmL = new THREE.DirectionalLight(0xffe4b8, 0.22); warmL.position.set(3, -2, 4); scene.add(warmL);
       const frontL = new THREE.DirectionalLight(0xcfe0ff, 0.26); frontL.position.set(0.5, 0.6, 9); scene.add(frontL);
     }
-    scene.add(new THREE.AmbientLight(cab ? 0xdde6ea : 0xffffff, cab ? 0.2 : 0.14));
+    scene.add(new THREE.AmbientLight(cab ? 0xdde6ea : 0xffffff, cab ? 0.34 : 0.14));
 
     const parts: { group: THREE.Group; update: (t: number, dt: number) => void; baseRot: number; amp: number }[] = [];
     if (kind === "cabinet") {
       const p = buildCabinet(); p.group.scale.setScalar(0.58); p.group.rotation.x = -0.05; scene.add(p.group); parts.push({ ...p, baseRot: 0, amp: 0.05 });
-      // ground the solid geometry with contact shadows; skip flat backdrops + glowing emitters so the cyan stays clean
-      p.group.traverse((o: THREE.Object3D) => {
-        const mesh = o as THREE.Mesh; if (!mesh.isMesh) return;
-        const mat = mesh.material as THREE.MeshStandardMaterial;
-        if ((mat as unknown as THREE.MeshBasicMaterial).isMeshBasicMaterial) return;      // vignette + LCD planes
-        if (mat.emissive && mat.emissive.getHex() > 0 && mat.emissiveIntensity > 0.6) { mesh.castShadow = false; mesh.receiveShadow = false; return; } // LEDs, server edge, RS485, pulses
-        mesh.castShadow = true; mesh.receiveShadow = true;
-      });
     }
     if (kind === "watt" || kind === "both") { const p = buildWatt(); p.group.position.x = kind === "both" ? -2.0 : 0; scene.add(p.group); parts.push({ ...p, baseRot: 0.3, amp: 0.5 }); }
     if (kind === "water" || kind === "both") { const p = buildWater(); p.group.position.set(kind === "both" ? 2.1 : 0, kind === "both" ? 0.05 : 0, 0); scene.add(p.group); parts.push({ ...p, baseRot: -0.3, amp: 0.5 }); }
